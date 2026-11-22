@@ -45,6 +45,42 @@ describe('authInterceptor', () => {
     expect(logout).toHaveBeenCalledWith('expired');
   });
 
+  it('logs out on a 401 UNAUTHORIZED body from /api/activities', () => {
+    const { http, ctrl, logout } = setup('tok');
+    http.get('/api/activities').subscribe({ error: () => undefined });
+    ctrl
+      .expectOne('/api/activities')
+      .flush({ error: 'x', code: 'UNAUTHORIZED', status: 401 }, unauthorized);
+    expect(logout).toHaveBeenCalledWith('expired');
+  });
+
+  it('does not log out on a 401 INVALID_CREDENTIALS from PATCH /api/users/me (wrong current password)', () => {
+    const { http, ctrl, logout } = setup('tok');
+    http.patch('/api/users/me', { current_password: 'bad' }).subscribe({ error: () => undefined });
+    ctrl
+      .expectOne('/api/users/me')
+      .flush({ error: 'x', code: 'INVALID_CREDENTIALS', status: 401 }, unauthorized);
+    expect(logout).not.toHaveBeenCalled();
+  });
+
+  it('does not log out on a 401 INVALID_CREDENTIALS from DELETE /api/users/me', () => {
+    const { http, ctrl, logout } = setup('tok');
+    http
+      .delete('/api/users/me', { body: { current_password: 'bad' } })
+      .subscribe({ error: () => undefined });
+    ctrl
+      .expectOne('/api/users/me')
+      .flush({ error: 'x', code: 'INVALID_CREDENTIALS', status: 401 }, unauthorized);
+    expect(logout).not.toHaveBeenCalled();
+  });
+
+  it('does not log out on a 401 when no token was attached to the request', () => {
+    const { http, ctrl, logout } = setup(null);
+    http.get('/api/activities').subscribe({ error: () => undefined });
+    ctrl.expectOne('/api/activities').flush({}, unauthorized);
+    expect(logout).not.toHaveBeenCalled();
+  });
+
   it('does not log out on a 401 from /api/auth/login (wrong credentials)', () => {
     const { http, ctrl, logout } = setup(null);
     http.post('/api/auth/login', {}).subscribe({ error: () => undefined });
