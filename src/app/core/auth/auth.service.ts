@@ -106,12 +106,21 @@ export class AuthService {
     void this.router.navigate(['/login'], reason ? { queryParams: { expired: 1 } } : undefined);
   }
 
+  /** Aggiorna i dati dell'utente in sessione (es. dopo la modifica di email o username dal profilo). */
+  updateUser(user: UserInfo): void {
+    const current = this.state();
+    if (current) this.persist({ token: current.token, user });
+  }
+
   homeFor(role: Role): string {
     return role === 'coach' ? '/coach/athletes' : '/dashboard';
   }
 
   private start(res: AuthResponse): void {
-    const stored: StoredAuth = { token: res.token, user: res.user };
+    this.persist({ token: res.token, user: res.user });
+  }
+
+  private persist(stored: StoredAuth): void {
     this.state.set(stored);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));

@@ -134,6 +134,84 @@
       "message": "Do you want to delete this activity? This cannot be undone."
     }
   },
+  "profile": {
+    "title": "Profile",
+    "loading": "Loading…",
+    "accountTitle": "Account",
+    "preferencesTitle": "Preferences",
+    "physioTitle": "Physiological data",
+    "email": "Email",
+    "username": "Username",
+    "newPassword": "New password",
+    "newPasswordHint": "Leave empty to keep it. At least 8 characters",
+    "currentPassword": "Current password",
+    "currentPasswordHint": "Required to change email or password",
+    "language": "Language",
+    "languageIt": "Italiano",
+    "languageEn": "English",
+    "timezone": "Time zone",
+    "birthDate": "Birth date",
+    "sex": "Sex",
+    "sexUnset": "Not specified",
+    "sexMale": "Male",
+    "sexFemale": "Female",
+    "sexOther": "Other",
+    "weight": "Weight (kg)",
+    "maxHr": "Max HR (bpm)",
+    "restingHr": "Resting HR (bpm)",
+    "ftp": "FTP (W)",
+    "thresholdPace": "Threshold pace (min/km)",
+    "thresholdPaceHint": "Format m:ss, for example 4:30",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Profile saved.",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "username": "3-50 characters: letters, digits, _ . -",
+      "password": "At least 8 characters.",
+      "timezone": "Pick a time zone from the list.",
+      "birthDate": "Invalid date.",
+      "positiveNumber": "Enter a number greater than zero.",
+      "positiveInteger": "Enter a whole number greater than zero.",
+      "pace": "Use the format m:ss, for example 4:30."
+    },
+    "delete": {
+      "button": "Delete account",
+      "title": "Delete account",
+      "message": "Your account and all your data will be permanently deleted. This cannot be undone. Enter your password to confirm.",
+      "password": "Password",
+      "confirm": "Delete permanently"
+    }
+  },
+  "myCoach": {
+    "title": "My coach",
+    "loading": "Loading…",
+    "request": {
+      "title": "Connect to a coach",
+      "label": "Coach's email or username",
+      "send": "Send request"
+    },
+    "pending": {
+      "title": "Request pending",
+      "text": "You asked {{coach}} to become your coach on {{date}}. Waiting for their reply.",
+      "cancel": "Cancel request"
+    },
+    "active": {
+      "title": "Your coach",
+      "text": "{{coach}} has been following you since {{date}}.",
+      "revoke": "Revoke access",
+      "revokeTitle": "Revoke access",
+      "revokeMessage": "The coach will no longer be able to see your data. Do you want to continue?"
+    },
+    "history": {
+      "title": "History"
+    },
+    "status": {
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
+      "revoked": "Revoked"
+    }
+  },
   "errors": {
     "ACCOUNT_DISABLED": "This account is disabled.",
     "ARCHIVE_TOO_LARGE": "The archive is too large once extracted.",

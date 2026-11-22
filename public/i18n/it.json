@@ -134,6 +134,84 @@
       "message": "Vuoi eliminare questa attività? L'operazione non può essere annullata."
     }
   },
+  "profile": {
+    "title": "Profilo",
+    "loading": "Caricamento in corso…",
+    "accountTitle": "Account",
+    "preferencesTitle": "Preferenze",
+    "physioTitle": "Dati fisiologici",
+    "email": "Email",
+    "username": "Nome utente",
+    "newPassword": "Nuova password",
+    "newPasswordHint": "Lascia vuoto per non cambiarla. Almeno 8 caratteri",
+    "currentPassword": "Password attuale",
+    "currentPasswordHint": "Necessaria per cambiare email o password",
+    "language": "Lingua",
+    "languageIt": "Italiano",
+    "languageEn": "English",
+    "timezone": "Fuso orario",
+    "birthDate": "Data di nascita",
+    "sex": "Sesso",
+    "sexUnset": "Non specificato",
+    "sexMale": "Maschio",
+    "sexFemale": "Femmina",
+    "sexOther": "Altro",
+    "weight": "Peso (kg)",
+    "maxHr": "FC massima (bpm)",
+    "restingHr": "FC a riposo (bpm)",
+    "ftp": "FTP (W)",
+    "thresholdPace": "Passo di soglia (min/km)",
+    "thresholdPaceHint": "Formato m:ss, per esempio 4:30",
+    "save": "Salva",
+    "saving": "Salvataggio in corso…",
+    "saved": "Profilo salvato.",
+    "errors": {
+      "email": "Inserisci un indirizzo email valido.",
+      "username": "3-50 caratteri: lettere, cifre, _ . -",
+      "password": "Almeno 8 caratteri.",
+      "timezone": "Scegli un fuso orario dall'elenco.",
+      "birthDate": "Data non valida.",
+      "positiveNumber": "Inserisci un numero maggiore di zero.",
+      "positiveInteger": "Inserisci un numero intero maggiore di zero.",
+      "pace": "Usa il formato m:ss, per esempio 4:30."
+    },
+    "delete": {
+      "button": "Elimina account",
+      "title": "Elimina account",
+      "message": "Il tuo account e tutti i tuoi dati verranno eliminati definitivamente. L'operazione non può essere annullata. Inserisci la password per confermare.",
+      "password": "Password",
+      "confirm": "Elimina definitivamente"
+    }
+  },
+  "myCoach": {
+    "title": "Il mio allenatore",
+    "loading": "Caricamento in corso…",
+    "request": {
+      "title": "Collegati a un allenatore",
+      "label": "Email o nome utente dell'allenatore",
+      "send": "Invia richiesta"
+    },
+    "pending": {
+      "title": "Richiesta in attesa",
+      "text": "Hai chiesto a {{coach}} di diventare il tuo allenatore il {{date}}. Attendi la sua risposta.",
+      "cancel": "Annulla richiesta"
+    },
+    "active": {
+      "title": "Il tuo allenatore",
+      "text": "{{coach}} ti segue dal {{date}}.",
+      "revoke": "Revoca accesso",
+      "revokeTitle": "Revoca accesso",
+      "revokeMessage": "L'allenatore non potrà più vedere i tuoi dati. Vuoi continuare?"
+    },
+    "history": {
+      "title": "Storico"
+    },
+    "status": {
+      "rejected": "Rifiutata",
+      "cancelled": "Annullata",
+      "revoked": "Revocata"
+    }
+  },
   "errors": {
     "ACCOUNT_DISABLED": "Questo account è disattivato.",
     "ARCHIVE_TOO_LARGE": "L'archivio è troppo grande una volta decompresso.",

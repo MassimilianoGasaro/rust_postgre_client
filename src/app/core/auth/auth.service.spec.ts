@@ -137,6 +137,27 @@ describe('AuthService', () => {
     expect(navigate).toHaveBeenCalledWith(['/login'], { queryParams: { expired: 1 } });
   });
 
+  it('updateUser replaces the stored user and keeps the token', () => {
+    const { auth, http } = setup();
+    const token = fakeJwt(future());
+    auth.login('a@b.it', 'secret').subscribe();
+    http.expectOne('/api/auth/login').flush({ token, user });
+
+    const renamed: UserInfo = { ...user, username: 'ada2', email: 'n@b.it' };
+    auth.updateUser(renamed);
+
+    expect(auth.user()).toEqual(renamed);
+    expect(auth.token()).toBe(token);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!)).toEqual({ token, user: renamed });
+  });
+
+  it('updateUser without a session does nothing', () => {
+    const { auth } = setup();
+    auth.updateUser(user);
+    expect(auth.isLoggedIn()).toBe(false);
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
   it('homeFor maps roles to their landing page', () => {
     const { auth } = setup();
     expect(auth.homeFor('athlete')).toBe('/dashboard');
