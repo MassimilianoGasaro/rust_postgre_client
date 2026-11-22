@@ -48,6 +48,7 @@
     "FILE_TOO_LARGE": "Il file è troppo grande.",
     "FORBIDDEN": "Non hai i permessi per questa operazione.",
     "GENERIC": "Si è verificato un errore. Riprova.",
+    "IMPORT_INTERRUPTED": "Import interrotto: carica di nuovo il file.",
     "IMPORT_IN_PROGRESS": "C'è già un'importazione in corso: attendi che termini.",
     "INTERNAL": "Errore interno del server. Riprova più tardi.",
     "INVALID_CREDENTIALS": "Credenziali non valide.",

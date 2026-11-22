@@ -94,6 +94,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
             mat-icon-button
             type="button"
             data-testid="menu-toggle"
+            [attr.aria-expanded]="drawerOpen()"
             [attr.aria-label]="'shell.menu' | transloco"
             (click)="drawerOpen.set(!drawerOpen())"
           >

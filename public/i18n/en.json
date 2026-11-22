@@ -48,6 +48,7 @@
     "FILE_TOO_LARGE": "The file is too large.",
     "FORBIDDEN": "You don't have permission to do this.",
     "GENERIC": "Something went wrong. Please try again.",
+    "IMPORT_INTERRUPTED": "Import interrupted: please upload the file again.",
     "IMPORT_IN_PROGRESS": "An import is already in progress: wait for it to finish.",
     "INTERNAL": "Internal server error. Please try again later.",
     "INVALID_CREDENTIALS": "Invalid credentials.",

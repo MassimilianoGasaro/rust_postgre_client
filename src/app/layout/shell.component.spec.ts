@@ -18,7 +18,7 @@ function setup(role: Role, handset: boolean) {
   TestBed.configureTestingModule({
     imports: [ShellComponent, translocoTesting()],
     providers: [
-      provideRouter([]),
+      provideRouter([{ path: '**', children: [] }]),
       provideHttpClient(),
       provideHttpClientTesting(),
       {
@@ -70,6 +70,38 @@ describe('ShellComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     expect(drawer.classList.contains('mat-drawer-opened')).toBe(true);
+  });
+
+  it('reflects the drawer state in aria-expanded on the hamburger', async () => {
+    const { el, fixture } = setup('athlete', true);
+    const toggle = el.querySelector<HTMLButtonElement>('button[data-testid="menu-toggle"]')!;
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    toggle.click();
+    fixture.detectChanges();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('closes the over drawer after clicking a nav link on Handset', async () => {
+    const { el, fixture } = setup('athlete', true);
+    const drawer = el.querySelector('mat-sidenav')!;
+    el.querySelector<HTMLButtonElement>('button[data-testid="menu-toggle"]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(drawer.classList.contains('mat-drawer-opened')).toBe(true);
+
+    el.querySelector<HTMLAnchorElement>('mat-sidenav a[mat-list-item]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(drawer.classList.contains('mat-drawer-opened')).toBe(false);
+  });
+
+  it('keeps the side drawer open after clicking a nav link on desktop', async () => {
+    const { el, fixture } = setup('athlete', false);
+    await fixture.whenStable();
+    el.querySelector<HTMLAnchorElement>('mat-sidenav a[mat-list-item]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(el.querySelector('mat-sidenav')!.classList.contains('mat-drawer-opened')).toBe(true);
   });
 
   it('athlete menu contains Import and not Richieste', () => {
