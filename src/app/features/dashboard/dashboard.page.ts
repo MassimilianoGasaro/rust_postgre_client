@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { DashboardComponent } from './dashboard.component';
 
-/** Segnaposto: la pagina vera sostituisce questo componente in un task successivo. */
+/** Pagina /dashboard dell'atleta: la dashboard sui propri dati. */
 @Component({
   selector: 'app-dashboard-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoPipe],
-  template: `<h1>{{ 'nav.dashboard' | transloco }}</h1>`,
+  imports: [DashboardComponent],
+  template: `<app-dashboard />`,
 })
 export class DashboardPage {}

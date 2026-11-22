@@ -71,6 +71,69 @@
     "haveAccount": "Hai già un account?",
     "sessionExpired": "La sessione è scaduta: accedi di nuovo."
   },
+  "common": {
+    "cancel": "Annulla",
+    "close": "Chiudi"
+  },
+  "sport": {
+    "running": "Corsa",
+    "cycling": "Ciclismo",
+    "swimming": "Nuoto",
+    "walking": "Camminata",
+    "hiking": "Escursionismo",
+    "strength": "Forza",
+    "other": "Altro"
+  },
+  "dashboard": {
+    "loading": "Caricamento in corso…",
+    "empty": "Nessuna attività nel periodo selezionato.",
+    "emptyImport": "Importa le tue attività",
+    "range": {
+      "label": "Periodo",
+      "7d": "7 giorni",
+      "30d": "30 giorni",
+      "90d": "90 giorni",
+      "1y": "1 anno",
+      "custom": "Personalizzato",
+      "dates": "Intervallo di date",
+      "from": "Dal",
+      "to": "Al"
+    },
+    "sport": {
+      "label": "Sport",
+      "all": "Tutti gli sport"
+    },
+    "totals": {
+      "count": "Attività",
+      "distance": "Distanza",
+      "movingTime": "Tempo in movimento",
+      "elevation": "Dislivello"
+    },
+    "chart": {
+      "distanceTitle": "Distanza per periodo",
+      "sportTitle": "Tempo per sport",
+      "weekPrefix": "sett.",
+      "movingTime": "Tempo in movimento",
+      "count": "Attività"
+    },
+    "list": {
+      "title": "Attività",
+      "date": "Data e ora",
+      "sport": "Sport",
+      "distance": "Distanza",
+      "duration": "Durata",
+      "elevation": "Dislivello",
+      "avgHr": "FC media",
+      "delete": "Elimina",
+      "prev": "Pagina precedente",
+      "next": "Pagina successiva",
+      "pageOf": "Pagina {{page}} di {{pages}}"
+    },
+    "delete": {
+      "title": "Elimina attività",
+      "message": "Vuoi eliminare questa attività? L'operazione non può essere annullata."
+    }
+  },
   "errors": {
     "ACCOUNT_DISABLED": "Questo account è disattivato.",
     "ARCHIVE_TOO_LARGE": "L'archivio è troppo grande una volta decompresso.",
