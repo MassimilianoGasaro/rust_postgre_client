@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -13,6 +21,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import { Role } from '../core/api/models';
 import { AuthService } from '../core/auth/auth.service';
+import { PendingRequestsService } from '../core/coach/pending-requests.service';
 import { Lang, LanguageService } from '../core/i18n/language.service';
 
 interface NavItem {
@@ -20,6 +29,8 @@ interface NavItem {
   icon: string;
   /** Chiave Transloco dell'etichetta */
   label: string;
+  /** Mostra il conteggio delle richieste in attesa accanto all'etichetta */
+  pendingBadge?: boolean;
 }
 
 /** Voci del menu laterale per ruolo (il profilo sta nel menu utente). */
@@ -30,7 +41,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     { link: '/my-coach', icon: 'sports', label: 'nav.myCoach' },
   ],
   coach: [
-    { link: '/coach/requests', icon: 'inbox', label: 'nav.requests' },
+    { link: '/coach/requests', icon: 'inbox', label: 'nav.requests', pendingBadge: true },
     { link: '/coach/athletes', icon: 'groups', label: 'nav.athletes' },
   ],
 };
@@ -80,6 +91,16 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     }
     .lang {
       margin-right: 8px;
+    }
+    .badge {
+      min-width: 20px;
+      padding: 0 6px;
+      border-radius: 10px;
+      background: var(--mat-sys-error);
+      color: var(--mat-sys-on-error);
+      font: var(--mat-sys-label-small);
+      line-height: 20px;
+      text-align: center;
     }
     .menu-user {
       padding: 8px 16px;
@@ -155,6 +176,16 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
               >
                 <mat-icon matListItemIcon aria-hidden="true">{{ item.icon }}</mat-icon>
                 <span matListItemTitle data-testid="nav-label">{{ item.label | transloco }}</span>
+                @if (item.pendingBadge && pending.count() > 0) {
+                  <span
+                    matListItemMeta
+                    class="badge"
+                    role="img"
+                    data-testid="requests-badge"
+                    [attr.aria-label]="'nav.pendingBadge' | transloco: { count: pending.count() }"
+                    >{{ pending.count() }}</span
+                  >
+                }
               </a>
             }
           </mat-nav-list>
@@ -169,6 +200,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
 export class ShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly language = inject(LanguageService);
+  protected readonly pending = inject(PendingRequestsService);
 
   protected readonly handset = toSignal(
     inject(BreakpointObserver)
@@ -184,6 +216,14 @@ export class ShellComponent {
     const role = this.auth.role();
     return role ? NAV_ITEMS[role] : [];
   });
+
+  constructor() {
+    // il conteggio serve solo al coach: si carica al login e si azzera negli altri casi
+    effect(() => {
+      const role = this.auth.role();
+      untracked(() => (role === 'coach' ? this.pending.refresh() : this.pending.clear()));
+    });
+  }
 
   protected setLanguage(lang: Lang): void {
     this.language.set(lang);

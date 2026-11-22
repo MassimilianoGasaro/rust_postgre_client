@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';
 import { ShellComponent } from './shell.component';
@@ -38,13 +38,16 @@ function setup(role: Role, handset: boolean) {
   });
   const fixture = TestBed.createComponent(ShellComponent);
   fixture.detectChanges();
-  return { fixture, el: fixture.nativeElement as HTMLElement, logout, language };
+  const ctrl = TestBed.inject(HttpTestingController);
+  return { fixture, el: fixture.nativeElement as HTMLElement, logout, language, ctrl };
 }
 
 const navTexts = (el: HTMLElement) =>
   Array.from(el.querySelectorAll('mat-sidenav [data-testid="nav-label"]')).map((s) =>
     s.textContent!.trim(),
   );
+
+const badge = (el: HTMLElement) => el.querySelector('[data-testid="requests-badge"]');
 
 describe('ShellComponent', () => {
   it('uses side mode, opened, on desktop and has no hamburger', async () => {
@@ -120,6 +123,40 @@ describe('ShellComponent', () => {
     expect(texts).toContain(itJson.nav.requests);
     expect(texts).toContain(itJson.nav.athletes);
     expect(texts).not.toContain(itJson.nav.import);
+  });
+
+  describe('pending requests badge', () => {
+    const PENDING = '/api/coach-links?status=pending';
+
+    it('a coach sees the number of pending requests on the Requests item', async () => {
+      const { el, fixture, ctrl } = setup('coach', false);
+      ctrl.expectOne(PENDING).flush([{ id: 1 }, { id: 2 }, { id: 3 }]);
+      fixture.detectChanges();
+      expect(badge(el)!.textContent!.trim()).toBe('3');
+      expect(badge(el)!.getAttribute('aria-label')).toBe('3 richieste in attesa');
+      // il badge sta nella voce Richieste, non in quella degli atleti
+      const items = Array.from(el.querySelectorAll('mat-sidenav a[mat-list-item]'));
+      expect(items[0].contains(badge(el))).toBe(true);
+      expect(el.querySelectorAll('[data-testid="requests-badge"]').length).toBe(1);
+    });
+
+    it('is hidden when there are no pending requests', async () => {
+      const { el, fixture, ctrl } = setup('coach', false);
+      ctrl.expectOne(PENDING).flush([]);
+      fixture.detectChanges();
+      expect(badge(el)).toBeNull();
+    });
+
+    it('is hidden while the count is not loaded yet', () => {
+      const { el } = setup('coach', false);
+      expect(badge(el)).toBeNull();
+    });
+
+    it('an athlete has no badge and no request is made', () => {
+      const { el, ctrl } = setup('athlete', false);
+      ctrl.expectNone(PENDING);
+      expect(badge(el)).toBeNull();
+    });
   });
 
   it('the language selector calls LanguageService.set', () => {

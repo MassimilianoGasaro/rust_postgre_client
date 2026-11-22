@@ -9,7 +9,8 @@
     "requests": "Richieste",
     "athletes": "Atleti",
     "athleteDashboard": "Dashboard atleta",
-    "profile": "Profilo"
+    "profile": "Profilo",
+    "pendingBadge": "{{count}} richieste in attesa"
   },
   "shell": {
     "menu": "Apri il menu",
@@ -210,6 +211,29 @@
       "rejected": "Rifiutata",
       "cancelled": "Annullata",
       "revoked": "Revocata"
+    }
+  },
+  "coach": {
+    "requests": {
+      "title": "Richieste in attesa",
+      "loading": "Caricamento in corso…",
+      "empty": "Nessuna richiesta in attesa.",
+      "text": "{{athlete}} · richiesta del {{date}}",
+      "accept": "Accetta",
+      "reject": "Rifiuta",
+      "rejectTitle": "Rifiuta richiesta",
+      "rejectMessage": "Vuoi rifiutare la richiesta di questo atleta?"
+    },
+    "athletes": {
+      "title": "I miei atleti",
+      "loading": "Caricamento in corso…",
+      "empty": "Non hai ancora nessun atleta.",
+      "since": "seguito dal {{date}}"
+    },
+    "athlete": {
+      "loading": "Caricamento in corso…",
+      "back": "Torna agli atleti",
+      "title": "Dashboard di {{athlete}}"
     }
   },
   "datepicker": {
