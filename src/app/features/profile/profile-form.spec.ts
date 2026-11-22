@@ -33,10 +33,22 @@ describe('pace conversion', () => {
     expect(paceToSeconds('4:30')).toBe(270);
     expect(paceToSeconds(' 5:05 ')).toBe(305);
     expect(paceToSeconds('10:00')).toBe(600);
+    expect(paceToSeconds('100:00')).toBe(6000);
   });
 
   it('rejects malformed or zero paces', () => {
-    for (const bad of ['', '430', '4:6', '4:60', '4:300', 'a:bc', '0:00', '-4:30', '4.30']) {
+    for (const bad of [
+      '',
+      '430',
+      '4:6',
+      '4:60',
+      '4:300',
+      '1000:00',
+      'a:bc',
+      '0:00',
+      '-4:30',
+      '4.30',
+    ]) {
       expect(paceToSeconds(bad), bad).toBeNull();
     }
   });
@@ -75,6 +87,12 @@ describe('timezoneOptions', () => {
 
 describe('buildPatch', () => {
   const base = (m: Me): ProfileFormValue => formValueFrom(m);
+
+  it('a stored pace of 6000 s or more keeps the round trip', () => {
+    expect(secondsToPace(6000)).toBe('100:00');
+    const m = me({ threshold_pace_s_per_km: 6000 });
+    expect(buildPatch(m, base(m), true)).toEqual({});
+  });
 
   it('is empty when nothing changed', () => {
     const m = me();
@@ -124,6 +142,11 @@ describe('buildPatch', () => {
   it('rounds weight to one decimal', () => {
     const m = me();
     expect(buildPatch(m, { ...base(m), weightKg: 71.26 }, true)).toEqual({ weight_kg: 71.3 });
+  });
+
+  it('does not round an untouched weight stored with more decimals', () => {
+    const m = me({ weight_kg: 70.55 });
+    expect(buildPatch(m, base(m), true)).toEqual({});
   });
 
   it('formats the birth date as YYYY-MM-DD without UTC shift', () => {

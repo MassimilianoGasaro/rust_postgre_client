@@ -28,6 +28,7 @@ import {
   sameRange,
   toIsoDate,
 } from '../../core/time/dates';
+import { DATEPICKER_INTL_PROVIDER } from '../../core/i18n/transloco-datepicker-intl';
 import { LocalDateAdapter } from '../../core/time/local-date-adapter';
 import { TODAY } from '../../core/time/today';
 
@@ -43,6 +44,7 @@ import { TODAY } from '../../core/time/today';
     TranslocoPipe,
   ],
   providers: [
+    DATEPICKER_INTL_PROVIDER,
     { provide: DateAdapter, useClass: LocalDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
   ],

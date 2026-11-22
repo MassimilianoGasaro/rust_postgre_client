@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Observable } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { errorKey } from '../../core/api/errors';
 import { CoachLink } from '../../core/api/models';
 import { CoachLinkApi } from '../../core/api/coach-link-api';
@@ -240,30 +240,36 @@ export class MyCoachPage {
       });
   }
 
-  /** Esegue un'azione sul collegamento e, riuscita, ricarica l'elenco. */
+  /**
+   * Esegue un'azione sul collegamento e ricarica l'elenco anche se fallisce (lo stato mostrato
+   * potrebbe essere superato); l'errore resta visibile e `busy` dura fino a fine ricaricamento.
+   */
   private run(action: Observable<CoachLink>, onSuccess?: () => void): void {
     this.busy.set(true);
     this.error.set(null);
     action.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         onSuccess?.();
-        this.busy.set(false);
         this.reload();
       },
       error: (err: unknown) => {
-        this.busy.set(false);
         this.error.set(errorKey(err));
+        this.reload();
       },
     });
   }
 
   private reload(): void {
+    this.busy.set(true);
     this.api
       .list()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => this.busy.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (links) => this.links.set(links),
-        error: (err: unknown) => this.error.set(errorKey(err)),
+        error: (err: unknown) => this.error.update((current) => current ?? errorKey(err)),
       });
   }
 }

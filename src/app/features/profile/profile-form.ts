@@ -18,7 +18,7 @@ export interface ProfileFormValue {
   thresholdPace: string;
 }
 
-const PACE_RE = /^(\d{1,2}):([0-5]\d)$/;
+const PACE_RE = /^(\d{1,3}):([0-5]\d)$/;
 
 /** Passo `m:ss` per km -> secondi; `null` se il formato non è valido o il passo è zero. */
 export function paceToSeconds(text: string): number | null {
@@ -136,8 +136,11 @@ export function buildPatch(me: Me, v: ProfileFormValue, isAthlete: boolean): Upd
     if (birth !== p.birth_date) patch.birth_date = birth;
     const sex = v.sex === '' ? null : v.sex;
     if (sex !== p.sex) patch.sex = sex;
-    const weight = v.weightKg === null ? null : round1(v.weightKg);
-    if (weight !== p.weight_kg) patch.weight_kg = weight;
+    // si arrotonda solo se l'utente ha modificato il valore: un form intatto non produce modifiche
+    if (v.weightKg !== p.weight_kg) {
+      const weight = v.weightKg === null ? null : round1(v.weightKg);
+      if (weight !== p.weight_kg) patch.weight_kg = weight;
+    }
     if (v.maxHr !== p.max_hr) patch.max_hr = v.maxHr;
     if (v.restingHr !== p.resting_hr) patch.resting_hr = v.restingHr;
     if (v.ftpWatts !== p.ftp_watts) patch.ftp_watts = v.ftpWatts;

@@ -212,6 +212,19 @@
       "revoked": "Revoked"
     }
   },
+  "datepicker": {
+    "calendar": "Calendar",
+    "open": "Open calendar",
+    "close": "Close calendar",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "prevYear": "Previous year",
+    "nextYear": "Next year",
+    "prevMultiYear": "Previous range of years",
+    "nextMultiYear": "Next range of years",
+    "switchToMonth": "Choose month",
+    "switchToMultiYear": "Choose year"
+  },
   "errors": {
     "ACCOUNT_DISABLED": "This account is disabled.",
     "ARCHIVE_TOO_LARGE": "The archive is too large once extracted.",

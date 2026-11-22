@@ -30,6 +30,7 @@ import { UserApi } from '../../core/api/user-api';
 import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/i18n/language.service';
 import { MIN_DATE } from '../../core/time/dates';
+import { DATEPICKER_INTL_PROVIDER } from '../../core/i18n/transloco-datepicker-intl';
 import { LocalDateAdapter } from '../../core/time/local-date-adapter';
 import { TODAY } from '../../core/time/today';
 import { DeleteAccountDialogComponent } from './delete-account-dialog.component';
@@ -56,6 +57,7 @@ const paceValidator = (c: AbstractControl): ValidationErrors | null =>
     TranslocoPipe,
   ],
   providers: [
+    DATEPICKER_INTL_PROVIDER,
     { provide: DateAdapter, useClass: LocalDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
   ],
@@ -404,10 +406,12 @@ export class ProfilePage {
 
   protected readonly suggestions = computed(() => {
     this.formTick();
-    const text = this.form.controls.timezone.value.trim().toLowerCase();
-    return this.timezones()
-      .filter((z) => z.toLowerCase().includes(text))
-      .slice(0, MAX_SUGGESTIONS);
+    const zones = this.timezones();
+    const value = this.form.controls.timezone.value;
+    // un valore già valido (es. quello salvato) non filtra: sul focus si vede l'elenco intero
+    if (zones.includes(value)) return zones;
+    const text = value.trim().toLowerCase();
+    return zones.filter((z) => z.toLowerCase().includes(text)).slice(0, MAX_SUGGESTIONS);
   });
 
   constructor() {

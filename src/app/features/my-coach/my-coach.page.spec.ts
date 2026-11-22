@@ -95,6 +95,7 @@ describe('MyCoachPage', () => {
       send(ctx);
       const e = httpErr('COACH_NOT_FOUND', 404);
       ctx.ctrl.expectOne({ method: 'POST', url: '/api/coach-links' }).flush(e.body, e.opts);
+      ctx.ctrl.expectOne({ method: 'GET', url: '/api/coach-links' }).flush([]);
       ctx.fixture.detectChanges();
       expect(q('error', ctx.el)!.textContent).toContain(itJson.errors.COACH_NOT_FOUND);
       expect(q<HTMLInputElement>('coach-input', ctx.el)!.value).toBe('nobody');
@@ -107,6 +108,7 @@ describe('MyCoachPage', () => {
       send(ctx);
       const e = httpErr(code, 409);
       ctx.ctrl.expectOne({ method: 'POST', url: '/api/coach-links' }).flush(e.body, e.opts);
+      ctx.ctrl.expectOne({ method: 'GET', url: '/api/coach-links' }).flush([]);
       ctx.fixture.detectChanges();
       const text = q('error', ctx.el)!.textContent;
       expect(text).toContain((itJson.errors as Record<string, string>)[code]);
@@ -135,8 +137,27 @@ describe('MyCoachPage', () => {
       q<HTMLButtonElement>('cancel-request', ctx.el)!.click();
       const e = httpErr('LINK_INVALID_STATE', 409);
       ctx.ctrl.expectOne('/api/coach-links/5/cancel').flush(e.body, e.opts);
+      // lo stato mostrato è superato: l'elenco si ricarica anche dopo l'errore
+      ctx.ctrl
+        .expectOne({ method: 'GET', url: '/api/coach-links' })
+        .flush([link(5, 'active', { responded_at: '2026-11-03T10:00:00Z' })]);
       ctx.fixture.detectChanges();
       expect(q('error', ctx.el)!.textContent).toContain(itJson.errors.LINK_INVALID_STATE);
+      expect(q('pending', ctx.el)).toBeNull();
+      expect(q('active', ctx.el)).not.toBeNull();
+    });
+
+    it('keeps the buttons disabled until the reload after an action completes', async () => {
+      const ctx = await setup([link(5, 'pending')]);
+      const cancel = q<HTMLButtonElement>('cancel-request', ctx.el)!;
+      cancel.click();
+      const e = httpErr('LINK_INVALID_STATE', 409);
+      ctx.ctrl.expectOne('/api/coach-links/5/cancel').flush(e.body, e.opts);
+      ctx.fixture.detectChanges();
+      expect(cancel.disabled).toBe(true);
+      ctx.ctrl.expectOne({ method: 'GET', url: '/api/coach-links' }).flush([link(5, 'pending')]);
+      ctx.fixture.detectChanges();
+      expect(q<HTMLButtonElement>('cancel-request', ctx.el)!.disabled).toBe(false);
     });
   });
 

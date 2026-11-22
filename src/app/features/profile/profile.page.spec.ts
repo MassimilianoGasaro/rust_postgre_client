@@ -7,6 +7,7 @@ import { ProfilePage } from './profile.page';
 import { AuthService } from '../../core/auth/auth.service';
 import { Me, Role } from '../../core/api/models';
 import { translocoTesting } from '../../testing';
+import enJson from '../../../../public/i18n/en.json';
 import itJson from '../../../../public/i18n/it.json';
 
 const me = (role: Role = 'athlete', profile: Partial<Me['profile']> = {}): Me => ({
@@ -126,6 +127,21 @@ describe('ProfilePage', () => {
     expect(fixture.nativeElement.textContent).toContain(itJson.errors.INTERNAL);
   });
 
+  it('the birth date calendar toggle is labelled in the active language', async () => {
+    const ctx = await setup();
+    const label = () =>
+      ctx.el.querySelector('mat-datepicker-toggle button')!.getAttribute('aria-label');
+    await vi.waitFor(() => {
+      ctx.fixture.detectChanges();
+      expect(label()).toBe(itJson.datepicker.open);
+    });
+    TestBed.inject(TranslocoService).setActiveLang('en');
+    await vi.waitFor(() => {
+      ctx.fixture.detectChanges();
+      expect(label()).toBe(enJson.datepicker.open);
+    });
+  });
+
   it('keeps Save disabled while nothing changed', async () => {
     const ctx = await setup();
     expect(save(ctx).disabled).toBe(true);
@@ -191,6 +207,31 @@ describe('ProfilePage', () => {
       touch(ctx, 'timezone');
       expect(save(ctx).disabled).toBe(true);
       expect(ctx.el.textContent).toContain(itJson.profile.errors.timezone);
+    });
+
+    it('on focus with a valid stored zone the whole list is offered, not only that zone', async () => {
+      const ctx = await setup();
+      q<HTMLInputElement>('timezone', ctx.el)!.dispatchEvent(new Event('focusin'));
+      ctx.fixture.detectChanges();
+      await ctx.fixture.whenStable();
+      const options = Array.from(document.querySelectorAll('mat-option')).map((o) =>
+        o.textContent!.trim(),
+      );
+      expect(options).toContain('Europe/Rome');
+      expect(options).toContain('Asia/Tokyo');
+    });
+
+    it('typing narrows the offered zones', async () => {
+      const ctx = await setup();
+      const input = q<HTMLInputElement>('timezone', ctx.el)!;
+      input.dispatchEvent(new Event('focusin'));
+      type(ctx, 'timezone', 'tokyo');
+      await ctx.fixture.whenStable();
+      ctx.fixture.detectChanges();
+      const options = Array.from(document.querySelectorAll('mat-option')).map((o) =>
+        o.textContent!.trim(),
+      );
+      expect(options).toEqual(['Asia/Tokyo']);
     });
 
     it('a valid zone is sent', async () => {

@@ -212,6 +212,19 @@
       "revoked": "Revocata"
     }
   },
+  "datepicker": {
+    "calendar": "Calendario",
+    "open": "Apri il calendario",
+    "close": "Chiudi il calendario",
+    "prevMonth": "Mese precedente",
+    "nextMonth": "Mese successivo",
+    "prevYear": "Anno precedente",
+    "nextYear": "Anno successivo",
+    "prevMultiYear": "Intervallo di anni precedente",
+    "nextMultiYear": "Intervallo di anni successivo",
+    "switchToMonth": "Scegli il mese",
+    "switchToMultiYear": "Scegli l'anno"
+  },
   "errors": {
     "ACCOUNT_DISABLED": "Questo account è disattivato.",
     "ARCHIVE_TOO_LARGE": "L'archivio è troppo grande una volta decompresso.",
