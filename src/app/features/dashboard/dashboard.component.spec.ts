@@ -219,6 +219,12 @@ describe('DashboardComponent', () => {
       expect(q<HTMLSelectElement>(el, 'sport-filter')!.value).toBe('cycling');
     });
 
+    it('ignores query param dates outside 1900..2200', async () => {
+      const { statsReq, listReq } = await setup({ query: 'from=1850-01-01&to=2026-02-01' });
+      expect(statsReq().request.params.get('from')).toBe('2026-10-24');
+      listReq();
+    });
+
     it('ignores malformed query params and falls back to the defaults', async () => {
       const { statsReq, listReq } = await setup({
         query: 'from=oops&to=2026-02-30&sport=quidditch',
@@ -345,8 +351,7 @@ describe('DashboardComponent', () => {
     it('paginates: next page requests page=2 without reloading the stats', async () => {
       const { el, fixture, ctrl, load, listReq } = await setup();
       await load(stats(), page([activity(1)], { total: 25 }));
-      expect(q(el, 'pager')!.textContent).toContain('1');
-      expect(q(el, 'pager')!.textContent).toContain('3');
+      expect(q(el, 'pager')!.textContent).toContain('Pagina 1 di 3');
       q<HTMLButtonElement>(el, 'next-page')!.click();
       fixture.detectChanges();
       await fixture.whenStable();
@@ -376,6 +381,11 @@ describe('DashboardComponent', () => {
       await load(stats(), page([activity(1), activity(2)]));
       expect(qa(el, 'activity-card').length).toBe(2);
       expect(el.querySelector('table')).toBeNull();
+      const text = qa(el, 'activity-card')[0].textContent!;
+      expect(text).toContain(`${itJson.dashboard.list.distance} 10,0 km`);
+      expect(text).toContain(`${itJson.dashboard.list.duration} 1:00`);
+      expect(text).toContain(`${itJson.dashboard.list.elevation} 123 m`);
+      expect(text).toContain(`${itJson.dashboard.list.avgHr} 152`);
     });
 
     it('uses the table on desktop', async () => {
@@ -519,7 +529,7 @@ describe('DashboardComponent', () => {
       listReq().flush(body, { status: 403, statusText: 'Forbidden' });
       await settle();
       expect(q(el, 'error')!.textContent).toContain(itJson.errors.ATHLETE_ACCESS_DENIED);
-      expect(denied).toHaveBeenCalled();
+      expect(denied).toHaveBeenCalledTimes(1);
     });
 
     it('does not emit accessDenied for other errors', async () => {

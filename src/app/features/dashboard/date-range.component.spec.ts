@@ -72,31 +72,60 @@ describe('DateRangeComponent', () => {
     expect(pressed(el)).toEqual(['preset-custom']);
   });
 
+  /** Digita una data nel formato del locale attivo (it) e notifica il cambio. */
+  const type = (input: HTMLInputElement, value: string) => {
+    input.value = value;
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new Event('change'));
+  };
+
   it('emits an ISO range (no UTC shift) once both custom dates are picked', () => {
     const { host, el, fixture, click } = setup({ from: '2026-11-16', to: '2026-11-22' });
     click('preset-custom');
-    const inputs = el.querySelectorAll<HTMLInputElement>('mat-date-range-input input');
-    const [start, end] = [inputs[0], inputs[1]];
-    // data digitata nel formato del locale attivo (it): l'adapter la interpreta
-    start.value = '02/01/2026';
-    start.dispatchEvent(new Event('input'));
-    start.dispatchEvent(new Event('change'));
-    // la nuova data d'inizio è compatibile con la fine precedente: l'intervallo si aggiorna subito
-    expect(host.range()).toEqual({ from: '2026-01-02', to: '2026-11-22' });
-    end.value = '20/01/2026';
-    end.dispatchEvent(new Event('input'));
-    end.dispatchEvent(new Event('change'));
+    const [start, end] = Array.from(
+      el.querySelectorAll<HTMLInputElement>('mat-date-range-input input'),
+    );
+    type(start, '02/01/2026');
+    type(end, '20/01/2026');
     fixture.detectChanges();
     expect(host.range()).toEqual({ from: '2026-01-02', to: '2026-01-20' });
   });
 
-  it('does not emit a range whose start is after its end', () => {
+  it('with an existing range, changing the start alone emits nothing; setting the end emits once', () => {
+    const { host, el, fixture, click } = setup({ from: '2026-11-16', to: '2026-11-22' });
+    click('preset-custom');
+    const [start, end] = Array.from(
+      el.querySelectorAll<HTMLInputElement>('mat-date-range-input input'),
+    );
+    const before = host.range();
+    type(start, '02/01/2026');
+    fixture.detectChanges();
+    // metà selezione: nessun intervallo applicato (niente ricarica né URL riscritto)
+    expect(host.range()).toBe(before);
+    type(end, '20/01/2026');
+    fixture.detectChanges();
+    expect(host.range()).toEqual({ from: '2026-01-02', to: '2026-01-20' });
+  });
+
+  it('does not emit a range whose end precedes its start', () => {
     const { host, el, click } = setup({ from: '2026-11-16', to: '2026-11-22' });
     click('preset-custom');
-    const start = el.querySelector<HTMLInputElement>('mat-date-range-input input')!;
-    start.value = '25/12/2026';
-    start.dispatchEvent(new Event('input'));
-    start.dispatchEvent(new Event('change'));
+    const [start, end] = Array.from(
+      el.querySelectorAll<HTMLInputElement>('mat-date-range-input input'),
+    );
+    type(start, '25/12/2026');
+    type(end, '20/12/2026');
+    expect(host.range()).toEqual({ from: '2026-11-16', to: '2026-11-22' });
+  });
+
+  it('does not emit dates outside 1900..2200', () => {
+    const { host, el, click } = setup({ from: '2026-11-16', to: '2026-11-22' });
+    click('preset-custom');
+    const [start, end] = Array.from(
+      el.querySelectorAll<HTMLInputElement>('mat-date-range-input input'),
+    );
+    type(start, '01/01/1850');
+    type(end, '01/01/2026');
     expect(host.range()).toEqual({ from: '2026-11-16', to: '2026-11-22' });
   });
 });

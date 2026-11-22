@@ -38,3 +38,11 @@ export function presetRange(preset: Preset, today: Date): DateRange {
 export function sameRange(a: DateRange, b: DateRange): boolean {
   return a.from === b.from && a.to === b.to;
 }
+
+/** Anni accettati dal backend per from/to (1900..=2200). */
+export const MIN_DATE = new Date(1900, 0, 1);
+export const MAX_DATE = new Date(2200, 11, 31);
+
+export function inBounds(date: Date): boolean {
+  return date >= MIN_DATE && date <= MAX_DATE;
+}

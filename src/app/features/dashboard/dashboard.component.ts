@@ -39,7 +39,13 @@ import { errorKey } from '../../core/api/errors';
 import { Activity, DateRange, Page, StatsSummary } from '../../core/api/models';
 import { StatsApi } from '../../core/api/stats-api';
 import { DistanceKmPipe, DurationPipe } from '../../core/format/format.pipes';
-import { DEFAULT_PRESET, parseIsoDate, presetRange, sameRange } from '../../core/time/dates';
+import {
+  DEFAULT_PRESET,
+  inBounds,
+  parseIsoDate,
+  presetRange,
+  sameRange,
+} from '../../core/time/dates';
 import { TODAY } from '../../core/time/today';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog.component';
 import { formatActivityStart, formatElevation, formatHeartRate } from './activity-format';
@@ -283,9 +289,18 @@ const settled = <T>(source: Observable<T>) =>
                 </button>
               }
               <div class="metrics">
-                <span>{{ row.activity.distance_m | distanceKm }}</span>
-                <span>{{ row.activity.moving_s ?? row.activity.elapsed_s | duration }}</span>
-                <span>{{ elevation(row.activity.elevation_gain_m) }}</span>
+                <span
+                  >{{ 'dashboard.list.distance' | transloco }}
+                  {{ row.activity.distance_m | distanceKm }}</span
+                >
+                <span>
+                  {{ 'dashboard.list.duration' | transloco }}
+                  {{ row.activity.moving_s ?? row.activity.elapsed_s | duration }}
+                </span>
+                <span>
+                  {{ 'dashboard.list.elevation' | transloco }}
+                  {{ elevation(row.activity.elevation_gain_m) }}
+                </span>
                 <span
                   >{{ 'dashboard.list.avgHr' | transloco }}
                   {{ heartRate(row.activity.avg_hr) }}</span
@@ -404,6 +419,8 @@ export class DashboardComponent {
   protected readonly activities = signal<Page<Activity> | null>(null);
   private readonly statsError = signal<string | null>(null);
   private readonly listError = signal<string | null>(null);
+  /** Evita di emettere `accessDenied` due volte per lo stesso caricamento. */
+  private deniedEmitted = false;
   private readonly statsLoading = signal(true);
   private readonly listLoading = signal(true);
   protected readonly deletingId = signal<number | null>(null);
@@ -469,7 +486,10 @@ export class DashboardComponent {
   constructor() {
     toObservable(this.statsQuery)
       .pipe(
-        tap(() => this.statsLoading.set(true)),
+        tap(() => {
+          this.statsLoading.set(true);
+          this.deniedEmitted = false;
+        }),
         switchMap((q) =>
           settled(
             this.statsApi.summary(q.range, {
@@ -588,7 +608,11 @@ export class DashboardComponent {
       err.status === 403 &&
       key === 'errors.ATHLETE_ACCESS_DENIED'
     ) {
-      this.accessDenied.emit();
+      // un solo avviso per caricamento, anche se rispondono 403 sia statistiche sia elenco
+      if (!this.deniedEmitted) {
+        this.deniedEmitted = true;
+        this.accessDenied.emit();
+      }
     }
     return key;
   }
@@ -611,7 +635,15 @@ export class DashboardComponent {
     const to = params.get('to');
     const start = parseIsoDate(from);
     const end = parseIsoDate(to);
-    if (from !== null && to !== null && start !== null && end !== null && start <= end) {
+    if (
+      from !== null &&
+      to !== null &&
+      start !== null &&
+      end !== null &&
+      start <= end &&
+      inBounds(start) &&
+      inBounds(end)
+    ) {
       return { from, to };
     }
     return presetRange(DEFAULT_PRESET, this.today());

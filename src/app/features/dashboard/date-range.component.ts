@@ -19,7 +19,10 @@ import { DateRange } from '../../core/api/models';
 import {
   DEFAULT_PRESET,
   PRESETS,
+  MAX_DATE,
+  MIN_DATE,
   Preset,
+  inBounds,
   parseIsoDate,
   presetRange,
   sameRange,
@@ -87,7 +90,7 @@ import { TODAY } from '../../core/time/today';
     @if (active() === 'custom') {
       <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>{{ 'dashboard.range.dates' | transloco }}</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
+        <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate">
           <input
             matStartDate
             [placeholder]="'dashboard.range.from' | transloco"
@@ -116,6 +119,8 @@ export class DateRangeComponent {
   private readonly transloco = inject(TranslocoService);
 
   protected readonly presets = PRESETS;
+  protected readonly minDate = MIN_DATE;
+  protected readonly maxDate = MAX_DATE;
   protected readonly customMode = signal(false);
 
   private readonly lang = toSignal(this.transloco.langChanges$, {
@@ -148,21 +153,17 @@ export class DateRangeComponent {
     this.value.set(presetRange(preset, this.today()));
   }
 
+  /** Nuova data d'inizio: la fine va riscelta, l'intervallo non cambia finché non è completo. */
   protected onStart(date: Date | null): void {
     this.customStart.set(date);
-    this.emitCustom();
+    this.customEnd.set(null);
   }
 
-  protected onEnd(date: Date | null): void {
-    this.customEnd.set(date);
-    this.emitCustom();
-  }
-
-  /** L'intervallo cambia solo quando entrambe le date sono scelte. */
-  private emitCustom(): void {
+  /** L'intervallo cambia solo quando la fine scelta è valida e non precede l'inizio. */
+  protected onEnd(end: Date | null): void {
+    this.customEnd.set(end);
     const start = this.customStart();
-    const end = this.customEnd();
-    if (start === null || end === null || start > end) return;
+    if (start === null || end === null || start > end || !inBounds(start) || !inBounds(end)) return;
     // chi sceglie le date a mano resta in modalità personalizzata anche se coincidono con un preset
     this.customMode.set(true);
     this.value.set({ from: toIsoDate(start), to: toIsoDate(end) });
