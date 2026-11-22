@@ -2,7 +2,67 @@
   "app": {
     "title": "Training"
   },
+  "nav": {
+    "dashboard": "Dashboard",
+    "import": "Import",
+    "myCoach": "My coach",
+    "requests": "Requests",
+    "athletes": "Athletes",
+    "athleteDashboard": "Athlete dashboard",
+    "profile": "Profile"
+  },
+  "shell": {
+    "menu": "Open menu",
+    "language": "Language",
+    "userMenu": "User menu",
+    "logout": "Log out"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "registerTitle": "Create an account",
+    "email": "Email",
+    "username": "Username",
+    "password": "Password",
+    "usernameHint": "3-50 characters: letters, digits, _ . -",
+    "passwordHint": "At least 8 characters",
+    "role": "I am a",
+    "roleAthlete": "Athlete",
+    "roleCoach": "Coach",
+    "login": "Sign in",
+    "register": "Sign up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "sessionExpired": "Your session has expired: please sign in again."
+  },
   "errors": {
-    "GENERIC": "Something went wrong. Please try again."
+    "ACCOUNT_DISABLED": "This account is disabled.",
+    "ARCHIVE_TOO_LARGE": "The archive is too large once extracted.",
+    "ATHLETE_ACCESS_DENIED": "You don't have access to this athlete's data.",
+    "BAD_REQUEST": "Invalid request.",
+    "COACH_LINK_EXISTS": "A link with this coach already exists.",
+    "COACH_NOT_FOUND": "Coach not found.",
+    "CONFLICT": "The operation conflicts with the current state.",
+    "DUPLICATE_FILE": "This file has already been imported.",
+    "EMAIL_TAKEN": "This email is already registered.",
+    "EMPTY_ACTIVITY": "The file contains no activity data.",
+    "FILE_TOO_LARGE": "The file is too large.",
+    "FORBIDDEN": "You don't have permission to do this.",
+    "GENERIC": "Something went wrong. Please try again.",
+    "IMPORT_IN_PROGRESS": "An import is already in progress: wait for it to finish.",
+    "INTERNAL": "Internal server error. Please try again later.",
+    "INVALID_CREDENTIALS": "Invalid credentials.",
+    "INVALID_TIMEZONE": "Invalid time zone.",
+    "LINK_INVALID_STATE": "This request can't be changed in its current state.",
+    "METHOD_NOT_ALLOWED": "Operation not allowed.",
+    "NOT_A_COACH": "The selected user is not a coach.",
+    "NOT_FOUND": "Resource not found.",
+    "NO_FILES": "No file selected.",
+    "PARSE_ERROR": "The file could not be read.",
+    "ROLE_FORBIDDEN": "Your role can't perform this operation.",
+    "UNAUTHORIZED": "Invalid session: please sign in again.",
+    "UNSUPPORTED_FORMAT": "Unsupported file format.",
+    "UPLOAD_TOO_LARGE": "The upload exceeds the maximum size.",
+    "USERNAME_TAKEN": "This username is already taken.",
+    "VALIDATION_FAILED": "Some data is not valid. Check and try again."
   }
 }

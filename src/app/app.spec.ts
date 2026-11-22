@@ -1,37 +1,20 @@
-import { firstValueFrom } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { TranslocoService, TranslocoTestingModule } from '@jsverse/transloco';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
-import enJson from '../../public/i18n/en.json';
-import itJson from '../../public/i18n/it.json';
+import { LanguageService } from './core/i18n/language.service';
 
 describe('App', () => {
-  beforeEach(async () => {
+  it('initialises the language on startup and hosts the router outlet', async () => {
+    const init = vi.fn();
     await TestBed.configureTestingModule({
-      imports: [
-        App,
-        TranslocoTestingModule.forRoot({
-          langs: { it: itJson, en: enJson },
-          translocoConfig: { availableLangs: ['it', 'en'], defaultLang: 'it', reRenderOnLangChange: true },
-        }),
-      ],
+      imports: [App],
+      providers: [provideRouter([]), { provide: LanguageService, useValue: { init } }],
     }).compileComponents();
-  });
 
-  it('shows the translated title in Italian by default', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Allenamento');
-  });
 
-  it('switches title to English after setActiveLang', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const transloco = TestBed.inject(TranslocoService);
-    transloco.setActiveLang('en');
-    await firstValueFrom(transloco.load('en'));
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Training');
+    expect(init).toHaveBeenCalledTimes(1);
+    expect((fixture.nativeElement as HTMLElement).querySelector('router-outlet')).not.toBeNull();
   });
 });

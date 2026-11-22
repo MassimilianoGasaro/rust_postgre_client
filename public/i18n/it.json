@@ -2,7 +2,67 @@
   "app": {
     "title": "Allenamento"
   },
+  "nav": {
+    "dashboard": "Dashboard",
+    "import": "Importa",
+    "myCoach": "Il mio allenatore",
+    "requests": "Richieste",
+    "athletes": "Atleti",
+    "athleteDashboard": "Dashboard atleta",
+    "profile": "Profilo"
+  },
+  "shell": {
+    "menu": "Apri il menu",
+    "language": "Lingua",
+    "userMenu": "Menu utente",
+    "logout": "Esci"
+  },
+  "auth": {
+    "loginTitle": "Accedi",
+    "registerTitle": "Crea un account",
+    "email": "Email",
+    "username": "Nome utente",
+    "password": "Password",
+    "usernameHint": "3-50 caratteri: lettere, cifre, _ . -",
+    "passwordHint": "Almeno 8 caratteri",
+    "role": "Sono",
+    "roleAthlete": "Atleta",
+    "roleCoach": "Allenatore",
+    "login": "Accedi",
+    "register": "Registrati",
+    "noAccount": "Non hai un account?",
+    "haveAccount": "Hai già un account?",
+    "sessionExpired": "La sessione è scaduta: accedi di nuovo."
+  },
   "errors": {
-    "GENERIC": "Si è verificato un errore. Riprova."
+    "ACCOUNT_DISABLED": "Questo account è disattivato.",
+    "ARCHIVE_TOO_LARGE": "L'archivio è troppo grande una volta decompresso.",
+    "ATHLETE_ACCESS_DENIED": "Non hai accesso ai dati di questo atleta.",
+    "BAD_REQUEST": "Richiesta non valida.",
+    "COACH_LINK_EXISTS": "Esiste già un collegamento con questo allenatore.",
+    "COACH_NOT_FOUND": "Allenatore non trovato.",
+    "CONFLICT": "L'operazione è in conflitto con lo stato attuale.",
+    "DUPLICATE_FILE": "Questo file è già stato importato.",
+    "EMAIL_TAKEN": "Questa email è già registrata.",
+    "EMPTY_ACTIVITY": "Il file non contiene dati di attività.",
+    "FILE_TOO_LARGE": "Il file è troppo grande.",
+    "FORBIDDEN": "Non hai i permessi per questa operazione.",
+    "GENERIC": "Si è verificato un errore. Riprova.",
+    "IMPORT_IN_PROGRESS": "C'è già un'importazione in corso: attendi che termini.",
+    "INTERNAL": "Errore interno del server. Riprova più tardi.",
+    "INVALID_CREDENTIALS": "Credenziali non valide.",
+    "INVALID_TIMEZONE": "Fuso orario non valido.",
+    "LINK_INVALID_STATE": "Questa richiesta non può essere modificata nel suo stato attuale.",
+    "METHOD_NOT_ALLOWED": "Operazione non consentita.",
+    "NOT_A_COACH": "L'utente selezionato non è un allenatore.",
+    "NOT_FOUND": "Risorsa non trovata.",
+    "NO_FILES": "Nessun file selezionato.",
+    "PARSE_ERROR": "Impossibile leggere il file.",
+    "ROLE_FORBIDDEN": "Il tuo ruolo non può eseguire questa operazione.",
+    "UNAUTHORIZED": "Sessione non valida: accedi di nuovo.",
+    "UNSUPPORTED_FORMAT": "Formato di file non supportato.",
+    "UPLOAD_TOO_LARGE": "Il caricamento supera la dimensione massima.",
+    "USERNAME_TAKEN": "Questo nome utente è già in uso.",
+    "VALIDATION_FAILED": "Alcuni dati non sono validi. Controlla e riprova."
   }
 }
