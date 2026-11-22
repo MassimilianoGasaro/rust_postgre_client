@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Subscription, map, switchMap, takeWhile, tap, timer } from 'rxjs';
+import { Subscription, exhaustMap, map, takeWhile, tap, timer } from 'rxjs';
 import { ImportApi } from '../../core/api/import-api';
 import { errorKey } from '../../core/api/errors';
 import { ImportDto, ImportItem } from '../../core/api/models';
@@ -211,7 +211,7 @@ function uploadErrorKey(err: unknown): string {
       @if (uploading()) {
         <mat-progress-bar
           data-testid="progress"
-          mode="determinate"
+          [mode]="progressKnown() ? 'determinate' : 'indeterminate'"
           [value]="progress()"
           [attr.aria-label]="'import.uploading' | transloco"
         />
@@ -333,6 +333,8 @@ export class ImportPage {
   protected readonly dragging = signal(false);
   protected readonly uploading = signal(false);
   protected readonly progress = signal(0);
+  /** Falso finché non arriva un evento di progresso con il totale */
+  protected readonly progressKnown = signal(false);
   /** Chiave Transloco dell'ultimo errore */
   protected readonly error = signal<string | null>(null);
   protected readonly recent = signal<ImportDto[]>([]);
@@ -389,6 +391,7 @@ export class ImportPage {
     this.error.set(null);
     this.current.set(null);
     this.progress.set(0);
+    this.progressKnown.set(false);
     this.uploading.set(true);
     this.api
       .upload(files)
@@ -411,7 +414,8 @@ export class ImportPage {
     this.followedId.set(id);
     this.pollSub = timer(0, POLL_INTERVAL_MS)
       .pipe(
-        switchMap(() => this.api.get(id)),
+        // exhaustMap: una GET lenta non viene annullata e non ne parte una seconda
+        exhaustMap(() => this.api.get(id)),
         takeWhile((imp) => imp.status === 'processing', true),
         // `complete` sta prima di takeUntilDestroyed: alla distruzione non scatta
         tap({ complete: () => this.onPollDone() }),
@@ -427,7 +431,11 @@ export class ImportPage {
   }
 
   protected noteKey(item: ImportItem): string | null {
-    if (item.status === 'failed') return `errors.${item.error_code ?? 'GENERIC'}`;
+    if (item.status === 'failed') {
+      const key = `errors.${item.error_code ?? 'GENERIC'}`;
+      // codice senza traduzione: messaggio generico (translate restituisce la chiave stessa)
+      return this.transloco.translate(key) === key ? 'errors.GENERIC' : key;
+    }
     if (item.status === 'duplicate') return 'import.duplicateNote';
     return null;
   }
@@ -464,12 +472,20 @@ export class ImportPage {
 
   private onUploadEvent(event: HttpEvent<ImportDto>): void {
     if (event.type === HttpEventType.UploadProgress) {
-      if (event.total) this.progress.set(Math.round((event.loaded / event.total) * 100));
-    } else if (event.type === HttpEventType.Response && event.body) {
-      const imp = event.body;
+      if (event.total) {
+        this.progress.set(Math.round((event.loaded / event.total) * 100));
+        this.progressKnown.set(true);
+      }
+    } else if (event.type === HttpEventType.Response) {
       this.uploading.set(false);
       this.selected.set([]);
       this.skipped.set([]);
+      const imp = event.body;
+      if (!imp) {
+        // 202 senza corpo: l'import è partito, lo si ritrova (e segue) dai recenti
+        this.loadRecent(true);
+        return;
+      }
       this.current.set(imp);
       if (imp.status === 'processing') this.follow(imp.id);
       else this.loadRecent(false);

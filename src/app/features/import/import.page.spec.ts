@@ -322,6 +322,79 @@ describe('ImportPage', () => {
     ctx.ctrl.expectNone('/api/imports/7');
   });
 
+  it('resets uploading and reloads recent imports on a 202 with an empty body', () => {
+    const ctx = setup();
+    choose(ctx, [file('a.fit')]);
+    clickUpload(ctx);
+    postReq(ctx).flush(null, { status: 202, statusText: 'Accepted' });
+    ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([imp(5, 'processing')]);
+    ctx.fixture.detectChanges();
+    expect(q(ctx.el, 'progress')).toBeNull();
+    expect(q<HTMLButtonElement>(ctx.el, 'upload')!.textContent).toContain(itJson.import.upload);
+    // l'import in corso trovato nei recenti viene seguito
+    vi.advanceTimersByTime(0);
+    ctx.ctrl.expectOne('/api/imports/5').flush(imp(5, 'processing', []));
+  });
+
+  it('uses an indeterminate progress bar until a progress total is seen', () => {
+    const ctx = setup();
+    choose(ctx, [file('a.fit')]);
+    clickUpload(ctx);
+    const req = postReq(ctx);
+    const bar = () => q(ctx.el, 'progress')!;
+    expect(bar().classList.contains('mdc-linear-progress--indeterminate')).toBe(true);
+    req.event({ type: HttpEventType.UploadProgress, loaded: 10 });
+    ctx.fixture.detectChanges();
+    expect(bar().classList.contains('mdc-linear-progress--indeterminate')).toBe(true);
+    req.event({ type: HttpEventType.UploadProgress, loaded: 50, total: 100 });
+    ctx.fixture.detectChanges();
+    expect(bar().classList.contains('mdc-linear-progress--indeterminate')).toBe(false);
+    expect(bar().getAttribute('aria-valuenow')).toBe('50');
+  });
+
+  it('does not cancel a slow poll request nor issue a second one while it is in flight', () => {
+    const ctx = setup();
+    choose(ctx, [file('a.fit')]);
+    clickUpload(ctx);
+    postReq(ctx).flush(imp(7, 'processing', []), { status: 202, statusText: 'Accepted' });
+    vi.advanceTimersByTime(0);
+    const open = ctx.ctrl.match('/api/imports/7');
+    expect(open.length).toBe(1);
+
+    // la GET resta in volo oltre un secondo: nessuna seconda richiesta, la prima non è annullata
+    vi.advanceTimersByTime(3500);
+    expect(ctx.ctrl.match('/api/imports/7').length).toBe(0);
+    expect(open[0].cancelled).toBe(false);
+
+    open[0].flush(
+      imp(7, 'completed', [
+        { filename: 'a.fit', status: 'imported', activity_id: 3, error_code: null },
+      ]),
+    );
+    ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([]);
+    ctx.fixture.detectChanges();
+    expect(q(ctx.el, 'summary')!.textContent).toContain('1 importate, 0 duplicate, 0 errori');
+  });
+
+  it('falls back to the generic message for an error code without a translation', () => {
+    const ctx = setup();
+    choose(ctx, [file('a.fit')]);
+    clickUpload(ctx);
+    postReq(ctx).flush(imp(7, 'processing', []), { status: 202, statusText: 'Accepted' });
+    vi.advanceTimersByTime(0);
+    ctx.ctrl
+      .expectOne('/api/imports/7')
+      .flush(
+        imp(7, 'completed', [
+          { filename: 'a.fit', status: 'failed', activity_id: null, error_code: 'BRAND_NEW_CODE' },
+        ]),
+      );
+    ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([]);
+    ctx.fixture.detectChanges();
+    expect(q(ctx.el, 'results')!.textContent).toContain(itJson.errors.GENERIC);
+    expect(q(ctx.el, 'results')!.textContent).not.toContain('errors.BRAND_NEW_CODE');
+  });
+
   it('shows the export instructions box', () => {
     const { el } = setup();
     const box = q(el, 'instructions')!;
