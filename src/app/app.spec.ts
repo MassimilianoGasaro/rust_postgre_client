@@ -35,6 +35,3 @@ describe('App', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('Training');
   });
 });
-
-
-

@@ -9,7 +9,11 @@
     "test": "ng test"
   },
   "private": true,
-  "packageManager": "npm@10.9.2",
+  "packageManager": "npm@11.21.3",
+  "engines": {
+    "node": ">=22.12",
+    "npm": ">=11"
+  },
   "dependencies": {
     "@angular/cdk": "^21.2.14",
     "@angular/common": "^21.2.0",

@@ -4,7 +4,7 @@ Client Angular (Material, Transloco, ECharts) per la piattaforma di allenamento 
 
 ## Prerequisiti
 
-- Node.js 22.12 o superiore (Angular 21) e npm 10+
+- Node.js 22.12 o superiore (Angular 21) e **npm 11 o superiore**
 - Backend avviato in HTTPS su `https://localhost:3000` (certificato self-signed): in sviluppo `proxy.conf.json` inoltra `/api` al backend con `secure: false`.
 
 ## Installazione
@@ -12,6 +12,8 @@ Client Angular (Material, Transloco, ECharts) per la piattaforma di allenamento 
 ```bash
 npm install
 ```
+
+Con npm 10, `npm install` fallisce con `Cannot read properties of null (reading 'edgesOut')` (bug di npm 10 nella risoluzione delle peer dependency di vitest/jsdom). Aggiorna npm (`npm i -g npm@11`) oppure usa `npx npm@11 install`.
 
 ## Avvio in sviluppo
 
