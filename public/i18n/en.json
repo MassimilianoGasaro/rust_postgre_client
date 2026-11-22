@@ -1,0 +1,8 @@
+{
+  "app": {
+    "title": "Training"
+  },
+  "errors": {
+    "GENERIC": "Something went wrong. Please try again."
+  }
+}
