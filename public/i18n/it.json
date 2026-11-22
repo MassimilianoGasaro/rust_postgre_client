@@ -17,6 +17,43 @@
     "userMenu": "Menu utente",
     "logout": "Esci"
   },
+  "import": {
+    "title": "Importa attività",
+    "dropHint": "Trascina qui i file (.fit, .gpx, .tcx, .zip)",
+    "dropOr": "oppure",
+    "chooseFiles": "Scegli file",
+    "selectedTitle": "File selezionati",
+    "remove": "Rimuovi",
+    "upload": "Carica",
+    "uploading": "Caricamento in corso…",
+    "skippedTitle": "File ignorati (formato non supportato)",
+    "resultsTitle": "Esito dell'importazione",
+    "summary": "{{imported}} importate, {{duplicates}} duplicate, {{failed}} errori",
+    "processingNote": "Elaborazione in corso…",
+    "duplicateNote": "Già importata",
+    "columns": {
+      "file": "File",
+      "status": "Stato",
+      "note": "Note"
+    },
+    "status": {
+      "processing": "In elaborazione",
+      "completed": "Completato",
+      "failed": "Fallito",
+      "pending": "In attesa",
+      "imported": "Importata",
+      "duplicate": "Duplicata"
+    },
+    "recentTitle": "Import recenti",
+    "recentEmpty": "Nessun import ancora.",
+    "recentNumber": "Import n. {{id}}",
+    "follow": "Segui",
+    "instructionsTitle": "Come ottenere i file",
+    "instructionsSingleTitle": "Una singola attività",
+    "instructionsSingle": "Esporta il file originale dell'attività da Garmin Connect oppure dall'app COROS, poi caricalo qui. Sono accettati i formati FIT, GPX e TCX.",
+    "instructionsAllTitle": "Tutte le attività Garmin",
+    "instructionsAll": "Richiedi a Garmin l'esportazione completa dei dati del tuo account e carica qui il file ZIP così com'è, senza estrarlo."
+  },
   "auth": {
     "loginTitle": "Accedi",
     "registerTitle": "Crea un account",

@@ -17,6 +17,43 @@
     "userMenu": "User menu",
     "logout": "Log out"
   },
+  "import": {
+    "title": "Import activities",
+    "dropHint": "Drop your files here (.fit, .gpx, .tcx, .zip)",
+    "dropOr": "or",
+    "chooseFiles": "Choose files",
+    "selectedTitle": "Selected files",
+    "remove": "Remove",
+    "upload": "Upload",
+    "uploading": "Uploading…",
+    "skippedTitle": "Skipped files (unsupported format)",
+    "resultsTitle": "Import results",
+    "summary": "{{imported}} imported, {{duplicates}} duplicates, {{failed}} errors",
+    "processingNote": "Processing…",
+    "duplicateNote": "Already imported",
+    "columns": {
+      "file": "File",
+      "status": "Status",
+      "note": "Notes"
+    },
+    "status": {
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "pending": "Pending",
+      "imported": "Imported",
+      "duplicate": "Duplicate"
+    },
+    "recentTitle": "Recent imports",
+    "recentEmpty": "No imports yet.",
+    "recentNumber": "Import #{{id}}",
+    "follow": "Follow",
+    "instructionsTitle": "How to get your files",
+    "instructionsSingleTitle": "A single activity",
+    "instructionsSingle": "Export the original file of the activity from Garmin Connect or from the COROS app, then upload it here. FIT, GPX and TCX formats are accepted.",
+    "instructionsAllTitle": "All your Garmin activities",
+    "instructionsAll": "Request a full export of your Garmin account data and upload the ZIP file here as is, without extracting it."
+  },
   "auth": {
     "loginTitle": "Sign in",
     "registerTitle": "Create an account",
