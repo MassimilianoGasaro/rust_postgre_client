@@ -55,6 +55,6 @@ npx ng build
 
 Le traduzioni sono in `public/i18n/it.json` (default) e `public/i18n/en.json`: le due lingue devono avere lo stesso insieme di chiavi (verificato da `src/app/i18n-keys.spec.ts`).
 
-## Licenza
+## Contribuire e licenza
 
-Una licenza non e' ancora stata scelta.
+Come contribuire (fork, branch, commit, controlli prima della PR) e' descritto in [CONTRIBUTING.md](CONTRIBUTING.md). Il progetto e' distribuito con licenza [MIT](LICENSE).
