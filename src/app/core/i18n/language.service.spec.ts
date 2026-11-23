@@ -122,4 +122,14 @@ describe('LanguageService', () => {
     ctrl.expectOne('/api/users/me').flush({}, { status: 500, statusText: 'err' });
     expect(transloco.getActiveLang()).toBe('en');
   });
+
+  it('keeps <html lang> and the document title in sync with the active language', () => {
+    const { service } = setup(false);
+    service.set('en');
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.title).toBe('Training');
+    service.set('it');
+    expect(document.documentElement.lang).toBe('it');
+    expect(document.title).toBe('Allenamento');
+  });
 });

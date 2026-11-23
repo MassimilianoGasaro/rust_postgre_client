@@ -1,5 +1,7 @@
+import { DOCUMENT } from '@angular/common';
 import { inject, Injectable, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
+import { take } from 'rxjs';
 import { UserApi } from '../api/user-api';
 import { AuthService } from '../auth/auth.service';
 
@@ -33,6 +35,7 @@ export class LanguageService {
   private readonly transloco = inject(TranslocoService);
   private readonly auth = inject(AuthService);
   private readonly userApi = inject(UserApi);
+  private readonly document = inject(DOCUMENT);
 
   private readonly active = signal<Lang>('it');
   /** Lingua attualmente in uso. */
@@ -70,6 +73,12 @@ export class LanguageService {
   private apply(lang: Lang, persist: boolean): void {
     this.transloco.setActiveLang(lang);
     this.active.set(lang);
+    // accessibilità: <html lang> e titolo della scheda seguono la lingua attiva
+    this.document.documentElement.lang = lang;
+    this.transloco
+      .selectTranslate('app.title', {}, lang)
+      .pipe(take(1))
+      .subscribe((title) => (this.document.title = title));
     if (persist) writeStored(lang);
   }
 }
