@@ -6,7 +6,8 @@ const DAY_FIRST = /^(it|en-gb)/i;
 
 /**
  * Adapter nativo che, con locale italiano o inglese (`en-GB`), interpreta le date digitate come gg/mm/aaaa
- * (il parsing nativo del browser assume mm/gg/aaaa).
+ * (il parsing nativo del browser assume mm/gg/aaaa). Un numerico con separatori che non sia gg/mm/aaaa
+ * (anno a 2 cifre, ecc.) e' invalido: non cade mai nel parsing nativo.
  */
 @Injectable()
 export class LocalDateAdapter extends NativeDateAdapter {
@@ -19,6 +20,10 @@ export class LocalDateAdapter extends NativeDateAdapter {
         const valid =
           date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
         return valid ? date : this.invalid();
+      }
+      // numerico con separatori ma non gg/mm/aaaa (es. anno a 2 cifre): niente Date.parse, che lo leggerebbe mm/gg
+      if (/^[\d\s/.-]*\d\s*[/.-]\s*\d[\d\s/.-]*$/.test(value)) {
+        return this.invalid();
       }
     }
     return super.parse(value, parseFormat);
