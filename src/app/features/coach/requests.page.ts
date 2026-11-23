@@ -7,6 +7,7 @@ import { Observable, finalize } from 'rxjs';
 import { CoachLinkApi } from '../../core/api/coach-link-api';
 import { errorKey } from '../../core/api/errors';
 import { CoachLink } from '../../core/api/models';
+import { mediumDate } from '../../core/format/medium-date';
 import { PendingRequestsService } from '../../core/coach/pending-requests.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog.component';
 
@@ -116,7 +117,7 @@ export class RequestsPage {
   }
 
   protected date(iso: string): string {
-    return new Intl.DateTimeFormat(this.lang(), { dateStyle: 'medium' }).format(new Date(iso));
+    return mediumDate(iso, this.lang());
   }
 
   protected accept(link: CoachLink): void {

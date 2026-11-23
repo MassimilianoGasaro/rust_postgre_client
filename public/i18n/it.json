@@ -8,12 +8,12 @@
     "myCoach": "Il mio allenatore",
     "requests": "Richieste",
     "athletes": "Atleti",
-    "athleteDashboard": "Dashboard atleta",
     "profile": "Profilo",
     "pendingBadge": "{{count}} richieste in attesa"
   },
   "shell": {
     "menu": "Apri il menu",
+    "menuPending": "Apri il menu ({{count}} richieste in attesa)",
     "language": "Lingua",
     "userMenu": "Menu utente",
     "logout": "Esci"

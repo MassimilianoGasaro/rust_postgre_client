@@ -8,12 +8,12 @@
     "myCoach": "My coach",
     "requests": "Requests",
     "athletes": "Athletes",
-    "athleteDashboard": "Athlete dashboard",
     "profile": "Profile",
     "pendingBadge": "{{count}} pending requests"
   },
   "shell": {
     "menu": "Open menu",
+    "menuPending": "Open menu ({{count}} pending requests)",
     "language": "Language",
     "userMenu": "User menu",
     "logout": "Log out"

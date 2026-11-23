@@ -17,6 +17,7 @@ import { Observable, finalize } from 'rxjs';
 import { errorKey } from '../../core/api/errors';
 import { CoachLink } from '../../core/api/models';
 import { CoachLinkApi } from '../../core/api/coach-link-api';
+import { mediumDate } from '../../core/format/medium-date';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-dialog.component';
 
 /** Data di chiusura (o, in mancanza, di risposta/richiesta) per ordinare lo storico. */
@@ -211,7 +212,7 @@ export class MyCoachPage {
   }
 
   protected date(iso: string): string {
-    return new Intl.DateTimeFormat(this.lang(), { dateStyle: 'medium' }).format(new Date(iso));
+    return mediumDate(iso, this.lang());
   }
 
   protected request(): void {

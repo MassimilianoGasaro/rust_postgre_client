@@ -92,6 +92,15 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     .lang {
       margin-right: 8px;
     }
+    .dot {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--mat-sys-error);
+    }
     .badge {
       min-width: 20px;
       padding: 0 6px;
@@ -116,10 +125,13 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
             type="button"
             data-testid="menu-toggle"
             [attr.aria-expanded]="drawerOpen()"
-            [attr.aria-label]="'shell.menu' | transloco"
+            [attr.aria-label]="menuLabel() | transloco: { count: pending.count() }"
             (click)="drawerOpen.set(!drawerOpen())"
           >
             <mat-icon>menu</mat-icon>
+            @if (pending.count() > 0) {
+              <span class="dot" data-testid="menu-badge" aria-hidden="true"></span>
+            }
           </button>
         }
         <span class="title">{{ 'app.title' | transloco }}</span>
@@ -211,6 +223,11 @@ export class ShellComponent {
 
   /** Aperto su desktop, chiuso su mobile; si riallinea quando cambia il breakpoint. */
   protected readonly drawerOpen = linkedSignal(() => !this.handset());
+
+  /** Etichetta del pulsante menu: segnala anche le richieste in attesa. */
+  protected readonly menuLabel = computed(() =>
+    this.pending.count() > 0 ? 'shell.menuPending' : 'shell.menu',
+  );
 
   protected readonly navItems = computed(() => {
     const role = this.auth.role();

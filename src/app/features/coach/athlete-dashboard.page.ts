@@ -27,6 +27,11 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
       max-width: 1100px;
       margin: 0 auto 16px;
     }
+    .back {
+      display: inline-flex;
+      align-items: center;
+      min-height: 48px;
+    }
     h1 {
       margin: 0;
       font: var(--mat-sys-headline-medium);
@@ -37,7 +42,9 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
   `,
   template: `
     <div class="head">
-      <a routerLink="/coach/athletes" data-testid="back">{{ 'coach.athlete.back' | transloco }}</a>
+      <a class="back" routerLink="/coach/athletes" data-testid="back">{{
+        'coach.athlete.back' | transloco
+      }}</a>
       @if (athlete(); as a) {
         <h1>{{ 'coach.athlete.title' | transloco: { athlete: a.username } }}</h1>
       }

@@ -5,6 +5,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { CoachLinkApi } from '../../core/api/coach-link-api';
 import { errorKey } from '../../core/api/errors';
 import { LinkedAthlete } from '../../core/api/models';
+import { mediumDate } from '../../core/format/medium-date';
 
 /** Pagina /coach/athletes: atleti attivi, ciascuno porta alla sua dashboard. */
 @Component({
@@ -93,6 +94,6 @@ export class AthletesPage {
   }
 
   protected date(iso: string): string {
-    return new Intl.DateTimeFormat(this.lang(), { dateStyle: 'medium' }).format(new Date(iso));
+    return mediumDate(iso, this.lang());
   }
 }

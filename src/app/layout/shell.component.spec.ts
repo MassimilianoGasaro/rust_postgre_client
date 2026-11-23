@@ -152,6 +152,24 @@ describe('ShellComponent', () => {
       expect(badge(el)).toBeNull();
     });
 
+    it('on Handset the hamburger shows a dot and a translated label while requests are pending', () => {
+      const { el, fixture, ctrl } = setup('coach', true);
+      const toggle = el.querySelector('button[data-testid="menu-toggle"]')!;
+      expect(el.querySelector('[data-testid="menu-badge"]')).toBeNull();
+      expect(toggle.getAttribute('aria-label')).toBe(itJson.shell.menu);
+      ctrl.expectOne(PENDING).flush([{ id: 1 }, { id: 2 }]);
+      fixture.detectChanges();
+      expect(el.querySelector('[data-testid="menu-badge"]')).not.toBeNull();
+      expect(toggle.getAttribute('aria-label')).toBe('Apri il menu (2 richieste in attesa)');
+    });
+
+    it('the hamburger has no dot without pending requests', () => {
+      const { el, fixture, ctrl } = setup('coach', true);
+      ctrl.expectOne(PENDING).flush([]);
+      fixture.detectChanges();
+      expect(el.querySelector('[data-testid="menu-badge"]')).toBeNull();
+    });
+
     it('an athlete has no badge and no request is made', () => {
       const { el, ctrl } = setup('athlete', false);
       ctrl.expectNone(PENDING);

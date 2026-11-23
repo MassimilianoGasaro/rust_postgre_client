@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
+import { AuthService } from '../../core/auth/auth.service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { RequestsPage } from './requests.page';
@@ -19,10 +21,16 @@ const link = (id: number, username: string): CoachLink => ({
 
 const PENDING = '/api/coach-links?status=pending';
 
+/** Sessione di un coach: il conteggio del badge appartiene all'utente connesso. */
+const coachAuth = {
+  provide: AuthService,
+  useValue: { user: signal({ id: 9, email: 'c@x.it', username: 'coach_anna', role: 'coach' }) },
+};
+
 async function setup(links: CoachLink[] = [link(1, 'mario'), link(2, 'luca')]) {
   TestBed.configureTestingModule({
     imports: [RequestsPage, translocoTesting()],
-    providers: [provideHttpClient(), provideHttpClientTesting()],
+    providers: [provideHttpClient(), provideHttpClientTesting(), coachAuth],
   });
   const ctrl = TestBed.inject(HttpTestingController);
   const pending = TestBed.inject(PendingRequestsService);
