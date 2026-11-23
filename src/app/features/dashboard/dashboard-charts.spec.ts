@@ -1,5 +1,5 @@
 import { StatsSummary } from '../../core/api/models';
-import { ChartContext, barOption, periodLabel } from './dashboard-charts';
+import { ChartContext, barOption, donutOption, periodLabel } from './dashboard-charts';
 
 const ctx = (lang: 'it' | 'en'): ChartContext => ({
   lang,
@@ -49,5 +49,26 @@ describe('barOption tooltip', () => {
     expect(html).toContain('12,3 km');
     expect(html).toContain('1:15');
     expect(html).toContain('2');
+  });
+});
+
+describe('chart accessibility', () => {
+  const stats = {
+    granularity: 'day',
+    series: [],
+    by_sport: [],
+  } as unknown as StatsSummary;
+
+  it('enables ECharts aria with the translated chart title as description', () => {
+    const bar = barOption(stats, ctx('it')) as { aria: unknown };
+    const donut = donutOption(stats, ctx('it')) as { aria: unknown };
+    expect(bar.aria).toEqual({
+      enabled: true,
+      label: { description: 'dashboard.chart.distanceTitle' },
+    });
+    expect(donut.aria).toEqual({
+      enabled: true,
+      label: { description: 'dashboard.chart.sportTitle' },
+    });
   });
 });

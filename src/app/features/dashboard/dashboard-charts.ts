@@ -52,6 +52,7 @@ export function barOption(stats: StatsSummary, ctx: ChartContext): EChartsCoreOp
   });
   const labels = stats.series.map((p) => periodLabel(p.period_start, stats.granularity, ctx));
   return {
+    aria: { enabled: true, label: { description: ctx.t('dashboard.chart.distanceTitle') } },
     grid: { left: 8, right: 8, top: 24, bottom: 8, containLabel: true },
     tooltip: {
       trigger: 'axis',
@@ -83,6 +84,7 @@ export function barOption(stats: StatsSummary, ctx: ChartContext): EChartsCoreOp
 export function donutOption(stats: StatsSummary, ctx: ChartContext): EChartsCoreOption {
   return {
     color: SPORT_COLORS,
+    aria: { enabled: true, label: { description: ctx.t('dashboard.chart.sportTitle') } },
     tooltip: {
       trigger: 'item',
       formatter: (params: unknown) => {
