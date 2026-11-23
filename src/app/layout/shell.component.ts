@@ -62,27 +62,74 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     TranslocoPipe,
   ],
   styles: `
+    @use '../../styles/glass' as glass;
+
     :host {
       display: block;
       height: 100dvh;
     }
-    .shell {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+    // il contenitore occupa tutta l'altezza: la toolbar flotta sopra il contenuto
     .shell-body {
-      flex: 1;
-      min-height: 0;
+      height: 100%;
+      background: transparent;
+      --mat-sidenav-content-background-color: transparent;
+      --mat-sidenav-container-background-color: transparent;
+      --mat-sidenav-container-elevation-shadow: none;
+      --mat-sidenav-container-divider-color: transparent;
+      --mat-sidenav-container-shape: 0;
+    }
+    // scroll edge effect: fascia sfocata che sfuma il contenuto sopra la toolbar flottante.
+    // Niente mask sul contenitore che scorre: creerebbe un backdrop root e la toolbar
+    // smetterebbe di sfocare il contenuto sottostante.
+    .scroll-edge {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      height: 28px;
+      margin-bottom: -28px;
+      pointer-events: none;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+      mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    }
+    mat-sidenav {
+      width: 252px;
+    }
+    // pannello di vetro staccato dai bordi, come la sidebar flottante di iOS 26
+    .nav-panel {
+      @include glass.surface($radius: 24px);
+      box-sizing: border-box;
+      height: calc(100% - 24px);
+      margin: 12px 0 12px 12px;
+      padding: 8px 0;
+      overflow-y: auto;
+    }
+    mat-nav-list {
+      padding: 0 8px;
+    }
+    // toolbar: capsula di vetro che resta in alto mentre il contenuto scorre sotto
+    .glass-bar {
+      @include glass.surface($radius: 28px);
+      position: sticky;
+      top: 12px;
+      z-index: 2;
+      box-sizing: border-box;
+      width: auto;
+      margin: 12px 12px 0;
+      padding: 0 8px;
+      --mat-toolbar-container-background-color: transparent;
+      --mat-toolbar-container-text-color: var(--mat-sys-on-surface);
+    }
+    .glass-bar .mat-mdc-icon-button {
+      @include glass.interactive;
     }
     .spacer {
       flex: 1 1 auto;
     }
     .title {
       margin-left: 8px;
-    }
-    mat-sidenav {
-      width: 240px;
+      font: var(--mat-sys-title-medium);
     }
     .content {
       box-sizing: border-box;
@@ -90,6 +137,10 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     }
     .lang {
       margin-right: 8px;
+      --mat-button-toggle-background-color: transparent;
+      --mat-button-toggle-divider-color: var(--glass-rim);
+      --mat-button-toggle-shape: 999px;
+      --mat-button-toggle-height: 36px;
     }
     .dot {
       position: absolute;
@@ -116,56 +167,13 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     }
   `,
   template: `
-    <div class="shell">
-      <mat-toolbar color="primary">
-        @if (handset()) {
-          <button
-            mat-icon-button
-            type="button"
-            data-testid="menu-toggle"
-            [attr.aria-expanded]="drawerOpen()"
-            [attr.aria-label]="menuLabel() | transloco: { count: pending.count() }"
-            (click)="drawerOpen.set(!drawerOpen())"
-          >
-            <mat-icon>menu</mat-icon>
-            @if (pending.count() > 0) {
-              <span class="dot" data-testid="menu-badge" aria-hidden="true"></span>
-            }
-          </button>
-        }
-        <span class="title">{{ 'app.title' | transloco }}</span>
-        <span class="spacer"></span>
-
-        <app-language-toggle class="lang" />
-
-        <button
-          mat-icon-button
-          type="button"
-          data-testid="user-menu"
-          [matMenuTriggerFor]="userMenu"
-          [attr.aria-label]="'shell.userMenu' | transloco"
-        >
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <mat-menu #userMenu="matMenu">
-          <div class="menu-user">{{ auth.user()?.username }}</div>
-          <a mat-menu-item routerLink="/profile">
-            <mat-icon>person</mat-icon>
-            <span>{{ 'nav.profile' | transloco }}</span>
-          </a>
-          <button mat-menu-item type="button" data-testid="logout" (click)="auth.logout()">
-            <mat-icon>logout</mat-icon>
-            <span>{{ 'shell.logout' | transloco }}</span>
-          </button>
-        </mat-menu>
-      </mat-toolbar>
-
-      <mat-sidenav-container class="shell-body">
-        <mat-sidenav
-          [mode]="handset() ? 'over' : 'side'"
-          [opened]="drawerOpen()"
-          (openedChange)="drawerOpen.set($event)"
-        >
+    <mat-sidenav-container class="shell-body">
+      <mat-sidenav
+        [mode]="handset() ? 'over' : 'side'"
+        [opened]="drawerOpen()"
+        (openedChange)="drawerOpen.set($event)"
+      >
+        <nav class="nav-panel">
           <mat-nav-list>
             @for (item of navItems(); track item.link) {
               <a
@@ -191,12 +199,55 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
               </a>
             }
           </mat-nav-list>
-        </mat-sidenav>
-        <mat-sidenav-content>
-          <main class="content"><router-outlet /></main>
-        </mat-sidenav-content>
-      </mat-sidenav-container>
-    </div>
+        </nav>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <div class="scroll-edge" aria-hidden="true"></div>
+        <mat-toolbar class="glass-bar" data-testid="toolbar">
+          @if (handset()) {
+            <button
+              mat-icon-button
+              type="button"
+              data-testid="menu-toggle"
+              [attr.aria-expanded]="drawerOpen()"
+              [attr.aria-label]="menuLabel() | transloco: { count: pending.count() }"
+              (click)="drawerOpen.set(!drawerOpen())"
+            >
+              <mat-icon>menu</mat-icon>
+              @if (pending.count() > 0) {
+                <span class="dot" data-testid="menu-badge" aria-hidden="true"></span>
+              }
+            </button>
+          }
+          <span class="title">{{ 'app.title' | transloco }}</span>
+          <span class="spacer"></span>
+
+          <app-language-toggle class="lang" />
+
+          <button
+            mat-icon-button
+            type="button"
+            data-testid="user-menu"
+            [matMenuTriggerFor]="userMenu"
+            [attr.aria-label]="'shell.userMenu' | transloco"
+          >
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <div class="menu-user">{{ auth.user()?.username }}</div>
+            <a mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon>
+              <span>{{ 'nav.profile' | transloco }}</span>
+            </a>
+            <button mat-menu-item type="button" data-testid="logout" (click)="auth.logout()">
+              <mat-icon>logout</mat-icon>
+              <span>{{ 'shell.logout' | transloco }}</span>
+            </button>
+          </mat-menu>
+        </mat-toolbar>
+        <main class="content"><router-outlet /></main>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   `,
 })
 export class ShellComponent {
