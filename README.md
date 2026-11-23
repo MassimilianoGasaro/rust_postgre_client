@@ -29,6 +29,20 @@ L'app e' servita su http://localhost:4200; le chiamate a `/api/...` passano dal 
 
 L'app deve essere servita dalla **radice del sito** (`/`): le traduzioni sono caricate dal percorso assoluto `/i18n/<lingua>.json`, quindi un deploy in un sotto-percorso (es. `https://host/app/`) non le trova.
 
+### Indirizzo del backend
+
+In sviluppo le chiamate `/api/...` restano relative (proxy di `ng serve`). La build di produzione usa `src/environments/environment.prod.ts`: `apiBaseUrl` e' l'indirizzo pubblico del backend su Render (`https://rust-postgre-api.onrender.com`) e viene anteposto alle chiamate `/api/...`. Se il servizio Render ha un altro indirizzo, aggiorna quel valore. Il backend deve avere `CORS_ORIGIN` uguale all'indirizzo del client (es. `https://rust-postgre-client.pages.dev`).
+
+### Cloudflare Pages
+
+Il deploy parte dalla CI (`.github/workflows/ci.yml`, job `deploy`) a ogni push su `main`, solo se test e build sono verdi. La build avviene su GitHub (serve npm 11), Cloudflare riceve solo i file statici (progetto "Direct Upload"). Senza `404.html`, Pages serve `index.html` per ogni percorso: le route Angular funzionano anche ricaricando la pagina.
+
+Configurazione una tantum:
+
+1. Crea il progetto: `npx wrangler login` e poi `npx wrangler pages project create rust-postgre-client --production-branch=main` (oppure dalla dashboard: Workers & Pages → Create → Pages → Upload assets, con lo stesso nome).
+2. Crea un API token (My Profile → API Tokens) con il permesso **Account → Cloudflare Pages → Edit**.
+3. Nel repo GitHub (Settings → Secrets and variables → Actions) aggiungi `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` (l'ID e' nella dashboard Cloudflare, colonna di destra della pagina Workers & Pages).
+
 ## Test e build
 
 ```bash
