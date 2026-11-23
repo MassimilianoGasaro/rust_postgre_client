@@ -1,0 +1,38 @@
+# CI del client: test unitari e build di produzione su ogni push e Pull Request verso main/develop.
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: client
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # npm 10 va in crash su questo albero di dipendenze: serve npm >= 11 (vedi README).
+      - name: npm 11
+        run: npm install -g npm@11
+
+      - name: Installazione dipendenze
+        run: npm ci
+
+      - name: Test
+        run: npx ng test --watch=false
+
+      - name: Build
+        run: npx ng build
