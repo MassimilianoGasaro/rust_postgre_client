@@ -1,4 +1,4 @@
-# CI del client: test unitari e build di produzione su ogni push e Pull Request verso main/develop.
+# CI del client: test unitari e build su ogni push e Pull Request verso main/develop; deploy su Cloudflare Pages dai push su main.
 name: CI
 
 on:
@@ -36,3 +36,40 @@ jobs:
 
       - name: Build
         run: npx ng build
+
+      # Solo sui push a main: la build testata passa al job di deploy
+      - name: Artefatto della build
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-dist
+          path: dist/rust_postgre_client/browser
+          retention-days: 7
+
+  # Deploy su Cloudflare Pages (progetto Direct Upload) dopo test e build verdi su main.
+  # Segreti del repo richiesti: CLOUDFLARE_API_TOKEN (permesso "Cloudflare Pages: Edit")
+  # e CLOUDFLARE_ACCOUNT_ID.
+  deploy:
+    name: deploy
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    concurrency:
+      group: deploy-pages
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: client-dist
+          path: dist
+
+      - name: Deploy su Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=rust-postgre-client --branch=main
