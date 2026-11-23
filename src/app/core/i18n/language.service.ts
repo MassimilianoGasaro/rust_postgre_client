@@ -78,7 +78,10 @@ export class LanguageService {
     this.transloco
       .selectTranslate('app.title', {}, lang)
       .pipe(take(1))
-      .subscribe((title) => (this.document.title = title));
+      .subscribe((title) => {
+        // un risultato tardivo di una lingua non più attiva non deve sovrascrivere il titolo
+        if (this.active() === lang) this.document.title = title;
+      });
     if (persist) writeStored(lang);
   }
 }

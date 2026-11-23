@@ -9,7 +9,7 @@ import itJson from '../../../../public/i18n/it.json';
 
 function setup(queryParams: Record<string, string> = {}) {
   localStorage.clear();
-  const language = { init: vi.fn(), set: vi.fn() };
+  const language = { init: vi.fn(), set: vi.fn(), current: () => 'it' };
   TestBed.configureTestingModule({
     imports: [LoginPage, translocoTesting()],
     providers: [
@@ -47,6 +47,13 @@ function submit(ctx: ReturnType<typeof setup>, email = 'a@b.it', password = 'pas
 const user = (role: 'athlete' | 'coach') => ({ id: 1, email: 'a@b.it', username: 'abc', role });
 
 describe('LoginPage', () => {
+  it('lets a guest switch language without calling the API', () => {
+    const ctx = setup();
+    ctx.el.querySelector<HTMLButtonElement>('mat-button-toggle[value="en"] button')!.click();
+    expect(ctx.language.set).toHaveBeenCalledWith('en');
+    ctx.ctrl.expectNone(() => true);
+  });
+
   it('shows the INVALID_CREDENTIALS message on a wrong login', () => {
     const ctx = setup();
     submit(ctx);

@@ -10,6 +10,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/i18n/language.service';
 import { errorKey } from '../../core/api/errors';
 import { Role } from '../../core/api/models';
+import { LanguageToggleComponent } from '../../shared/language-toggle.component';
 import { AUTH_PAGE_STYLES } from './auth-page.styles';
 
 @Component({
@@ -22,11 +23,13 @@ import { AUTH_PAGE_STYLES } from './auth-page.styles';
     MatFormFieldModule,
     MatInputModule,
     MatRadioModule,
+    LanguageToggleComponent,
     TranslocoPipe,
   ],
   styles: AUTH_PAGE_STYLES,
   template: `
     <main class="auth-page">
+      <div class="lang-row"><app-language-toggle /></div>
       <h1>{{ 'app.title' | transloco }}</h1>
       <h2>{{ 'auth.registerTitle' | transloco }}</h2>
 

@@ -1,3 +1,5 @@
+import { dateLocale } from '../../core/format/date-locale';
+
 const MISSING = '—';
 
 /**
@@ -13,11 +15,11 @@ export function formatActivityStart(
   if (Number.isNaN(start.getTime())) return MISSING;
   const options: Intl.DateTimeFormatOptions = { dateStyle: 'short', timeStyle: 'short' };
   if (offsetSeconds === null) {
-    return new Intl.DateTimeFormat(lang, options).format(start);
+    return new Intl.DateTimeFormat(dateLocale(lang), options).format(start);
   }
   // si sposta l'istante dell'offset e si formatta in UTC: l'ora mostrata è quella locale dell'attività
   const shifted = new Date(start.getTime() + offsetSeconds * 1000);
-  return new Intl.DateTimeFormat(lang, { ...options, timeZone: 'UTC' }).format(shifted);
+  return new Intl.DateTimeFormat(dateLocale(lang), { ...options, timeZone: 'UTC' }).format(shifted);
 }
 
 /** Metri di dislivello -> "123 m". */

@@ -7,6 +7,7 @@ export const AUTH_PAGE_STYLES = `
     margin: 0 auto;
     padding: 24px 16px;
   }
+  .lang-row { display: flex; justify-content: flex-end; margin-bottom: 8px; }
   h1 { margin: 0 0 4px; font: var(--mat-sys-headline-medium); }
   h2 { margin: 0 0 16px; font: var(--mat-sys-title-medium); }
   form { display: flex; flex-direction: column; gap: 4px; }

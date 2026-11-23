@@ -9,14 +9,16 @@
     "requests": "Requests",
     "athletes": "Athletes",
     "profile": "Profile",
-    "pendingBadge": "{{count}} pending requests"
+    "pendingBadge": "{{count}} pending requests",
+    "pendingBadgeOne": "1 pending request"
   },
   "shell": {
     "menu": "Open menu",
     "menuPending": "Open menu ({{count}} pending requests)",
     "language": "Language",
     "userMenu": "User menu",
-    "logout": "Log out"
+    "logout": "Log out",
+    "menuPendingOne": "Open menu (1 pending request)"
   },
   "import": {
     "title": "Import activities",
@@ -29,7 +31,6 @@
     "uploading": "Uploading…",
     "skippedTitle": "Skipped files (unsupported format)",
     "resultsTitle": "Import results",
-    "summary": "{{imported}} imported, {{duplicates}} duplicates, {{failed}} errors",
     "processingNote": "Processing…",
     "duplicateNote": "Already imported",
     "columns": {
@@ -53,7 +54,21 @@
     "instructionsSingleTitle": "A single activity",
     "instructionsSingle": "Export the original file of the activity from Garmin Connect or from the COROS app, then upload it here. FIT, GPX and TCX formats are accepted.",
     "instructionsAllTitle": "All your Garmin activities",
-    "instructionsAll": "Request a full export of your Garmin account data and upload the ZIP file here as is, without extracting it."
+    "instructionsAll": "Request a full export of your Garmin account data and upload the ZIP file here as is, without extracting it.",
+    "counts": {
+      "imported": {
+        "one": "imported",
+        "other": "imported"
+      },
+      "duplicate": {
+        "one": "duplicate",
+        "other": "duplicates"
+      },
+      "failed": {
+        "one": "error",
+        "other": "errors"
+      }
+    }
   },
   "auth": {
     "loginTitle": "Sign in",

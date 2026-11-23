@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
 import { LanguageService } from './language.service';
 import { AuthService } from '../auth/auth.service';
@@ -27,12 +28,20 @@ function setNavigatorLanguage(lang: string) {
   vi.spyOn(navigator, 'language', 'get').mockReturnValue(lang);
 }
 
+const originalLang = document.documentElement.lang;
+const originalTitle = document.title;
+
 describe('LanguageService', () => {
   beforeEach(() => {
     localStorage.clear();
     setNavigatorLanguage('it-IT');
   });
-  afterEach(() => vi.restoreAllMocks());
+  afterEach(() => {
+    vi.restoreAllMocks();
+    // il test non deve lasciare lingua/titolo del documento alle prove successive
+    document.documentElement.lang = originalLang;
+    document.title = originalTitle;
+  });
 
   it('init uses rp.lang when present, ahead of the navigator language', () => {
     localStorage.setItem('rp.lang', 'en');
@@ -131,5 +140,27 @@ describe('LanguageService', () => {
     service.set('it');
     expect(document.documentElement.lang).toBe('it');
     expect(document.title).toBe('Allenamento');
+  });
+
+  it('init with a stored rp.lang=en updates <html lang> and the title', () => {
+    localStorage.setItem('rp.lang', 'en');
+    const { service } = setup(false);
+    service.init();
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.title).toBe('Training');
+  });
+
+  it('ignores a late title result when the active language changed meanwhile', () => {
+    const { service, transloco } = setup(false);
+    const titles: Record<string, Subject<string>> = { en: new Subject(), it: new Subject() };
+    vi.spyOn(transloco, 'selectTranslate').mockImplementation(
+      (_key, _params, lang) => titles[lang as string].asObservable(),
+    );
+    service.set('en');
+    service.set('it');
+    titles['it'].next('Allenamento');
+    titles['en'].next('Training');
+    expect(document.title).toBe('Allenamento');
+    expect(document.documentElement.lang).toBe('it');
   });
 });

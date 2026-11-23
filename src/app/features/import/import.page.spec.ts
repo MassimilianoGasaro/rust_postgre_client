@@ -188,7 +188,7 @@ describe('ImportPage', () => {
     expect(results.textContent).toContain(itJson.import.status.imported);
     expect(results.textContent).toContain(itJson.import.status.failed);
     expect(results.textContent).toContain(itJson.errors.PARSE_ERROR);
-    expect(q(ctx.el, 'summary')!.textContent).toContain('1 importate, 0 duplicate, 1 errori');
+    expect(q(ctx.el, 'summary')!.textContent).toContain('1 importata, 0 duplicate, 1 errore');
 
     // polling concluso: nessun'altra GET, ma la lista dei recenti viene aggiornata
     ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([imp(7, 'completed')]);
@@ -213,7 +213,7 @@ describe('ImportPage', () => {
     ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([]);
     ctx.fixture.detectChanges();
     expect(q(ctx.el, 'results')!.textContent).toContain(itJson.import.duplicateNote);
-    expect(q(ctx.el, 'summary')!.textContent).toContain('0 importate, 1 duplicate, 0 errori');
+    expect(q(ctx.el, 'summary')!.textContent).toContain('0 importate, 1 duplicata, 0 errori');
   });
 
   it('shows UPLOAD_TOO_LARGE on a 413', () => {
@@ -373,7 +373,7 @@ describe('ImportPage', () => {
     );
     ctx.ctrl.expectOne({ method: 'GET', url: '/api/imports' }).flush([]);
     ctx.fixture.detectChanges();
-    expect(q(ctx.el, 'summary')!.textContent).toContain('1 importate, 0 duplicate, 0 errori');
+    expect(q(ctx.el, 'summary')!.textContent).toContain('1 importata, 0 duplicate, 0 errori');
   });
 
   it('falls back to the generic message for an error code without a translation', () => {

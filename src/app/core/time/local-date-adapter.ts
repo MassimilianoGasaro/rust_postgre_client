@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { NativeDateAdapter } from '@angular/material/core';
 
+/** Locale che scrivono le date giorno-mese-anno (vedi `dateLocale`). */
+const DAY_FIRST = /^(it|en-gb)/i;
+
 /**
- * Adapter nativo che, con locale italiano, interpreta le date digitate come gg/mm/aaaa
+ * Adapter nativo che, con locale italiano o inglese (`en-GB`), interpreta le date digitate come gg/mm/aaaa
  * (il parsing nativo del browser assume mm/gg/aaaa).
  */
 @Injectable()
 export class LocalDateAdapter extends NativeDateAdapter {
   override parse(value: unknown, parseFormat?: unknown): Date | null {
-    if (typeof value === 'string' && this.locale.toString().toLowerCase().startsWith('it')) {
+    if (typeof value === 'string' && DAY_FIRST.test(this.locale.toString())) {
       const match = /^\s*(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})\s*$/.exec(value);
       if (match) {
         const [day, month, year] = [Number(match[1]), Number(match[2]), Number(match[3])];

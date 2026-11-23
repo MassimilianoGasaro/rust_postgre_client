@@ -53,6 +53,13 @@ const submitBtn = (el: HTMLElement) =>
   el.querySelector<HTMLButtonElement>('button[type="submit"]')!;
 
 describe('RegisterPage', () => {
+  it('lets a guest switch language without calling the API', () => {
+    const ctx = setup();
+    ctx.el.querySelector<HTMLButtonElement>('mat-button-toggle[value="it"] button')!.click();
+    expect(ctx.language.set).toHaveBeenCalledWith('it');
+    ctx.ctrl.expectNone(() => true);
+  });
+
   it('sends role "athlete" by default', () => {
     const ctx = setup();
     fillAll(ctx);

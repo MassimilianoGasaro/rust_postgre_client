@@ -140,6 +140,16 @@ describe('ShellComponent', () => {
       expect(el.querySelectorAll('[data-testid="requests-badge"]').length).toBe(1);
     });
 
+    it('uses the singular form for a single pending request (badge and hamburger)', () => {
+      const { el, fixture, ctrl } = setup('coach', true);
+      ctrl.expectOne(PENDING).flush([{ id: 1 }]);
+      fixture.detectChanges();
+      expect(badge(el)!.getAttribute('aria-label')).toBe('1 richiesta in attesa');
+      expect(
+        el.querySelector('button[data-testid="menu-toggle"]')!.getAttribute('aria-label'),
+      ).toBe('Apri il menu (1 richiesta in attesa)');
+    });
+
     it('is hidden when there are no pending requests', async () => {
       const { el, fixture, ctrl } = setup('coach', false);
       ctrl.expectOne(PENDING).flush([]);

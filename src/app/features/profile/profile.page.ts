@@ -28,6 +28,7 @@ import { errorKey } from '../../core/api/errors';
 import { Me, UpdateMeRequest } from '../../core/api/models';
 import { UserApi } from '../../core/api/user-api';
 import { AuthService } from '../../core/auth/auth.service';
+import { dateLocale } from '../../core/format/date-locale';
 import { LanguageService } from '../../core/i18n/language.service';
 import { MIN_DATE } from '../../core/time/dates';
 import { DATEPICKER_INTL_PROVIDER } from '../../core/i18n/transloco-datepicker-intl';
@@ -416,7 +417,7 @@ export class ProfilePage {
 
   constructor() {
     // il campo data segue la lingua attiva (formato e parsing gg/mm/aaaa in italiano)
-    effect(() => this.adapter.setLocale(this.lang()));
+    effect(() => this.adapter.setLocale(dateLocale(this.lang())));
     merge(this.form.valueChanges, this.form.statusChanges)
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.formTick.update((n) => n + 1));

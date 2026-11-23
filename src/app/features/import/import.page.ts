@@ -17,6 +17,7 @@ import { Subscription, exhaustMap, map, takeWhile, tap, timer } from 'rxjs';
 import { ImportApi } from '../../core/api/import-api';
 import { errorKey } from '../../core/api/errors';
 import { ImportDto, ImportItem } from '../../core/api/models';
+import { dateLocale } from '../../core/format/date-locale';
 
 /** Estensioni accettate dal backend (ZIP incluso); le altre non vengono caricate. */
 const ALLOWED_EXTENSIONS = ['.fit', '.gpx', '.tcx', '.zip'];
@@ -275,7 +276,10 @@ function uploadErrorKey(err: unknown): string {
           </table>
         }
         @if (summary(); as s) {
-          <p class="summary" data-testid="summary">{{ 'import.summary' | transloco: s }}</p>
+          <p class="summary" data-testid="summary">
+            {{ s.imported }} {{ s.importedKey | transloco }}, {{ s.duplicates }}
+            {{ s.duplicatesKey | transloco }}, {{ s.failed }} {{ s.failedKey | transloco }}
+          </p>
         }
       </section>
     }
@@ -351,7 +355,19 @@ export class ImportPage {
     if (imp === null || imp.status === 'processing' || this.items().length === 0) return null;
     const count = (status: ImportItem['status']) =>
       this.items().filter((i) => i.status === status).length;
-    return { imported: count('imported'), duplicates: count('duplicate'), failed: count('failed') };
+    const imported = count('imported');
+    const duplicates = count('duplicate');
+    const failed = count('failed');
+    // singolare/plurale: due chiavi per ogni voce del riepilogo
+    const noun = (name: string, n: number) => `import.counts.${name}.${n === 1 ? 'one' : 'other'}`;
+    return {
+      imported,
+      duplicates,
+      failed,
+      importedKey: noun('imported', imported),
+      duplicatesKey: noun('duplicate', duplicates),
+      failedKey: noun('failed', failed),
+    };
   });
 
   protected readonly canUpload = computed(
@@ -452,7 +468,7 @@ export class ImportPage {
   protected dateLabel(iso: string): string {
     const date = new Date(iso);
     if (Number.isNaN(date.getTime())) return '';
-    return new Intl.DateTimeFormat(this.transloco.getActiveLang(), {
+    return new Intl.DateTimeFormat(dateLocale(this.transloco.getActiveLang()), {
       dateStyle: 'short',
       timeStyle: 'short',
     }).format(date);

@@ -28,6 +28,7 @@ import {
   sameRange,
   toIsoDate,
 } from '../../core/time/dates';
+import { dateLocale } from '../../core/format/date-locale';
 import { DATEPICKER_INTL_PROVIDER } from '../../core/i18n/transloco-datepicker-intl';
 import { LocalDateAdapter } from '../../core/time/local-date-adapter';
 import { TODAY } from '../../core/time/today';
@@ -147,7 +148,7 @@ export class DateRangeComponent {
       }
     });
     // i campi data seguono la lingua attiva
-    effect(() => this.adapter.setLocale(this.lang()));
+    effect(() => this.adapter.setLocale(dateLocale(this.lang())));
   }
 
   protected select(preset: Preset): void {

@@ -11,7 +11,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -22,7 +21,7 @@ import { map } from 'rxjs';
 import { Role } from '../core/api/models';
 import { AuthService } from '../core/auth/auth.service';
 import { PendingRequestsService } from '../core/coach/pending-requests.service';
-import { Lang, LanguageService } from '../core/i18n/language.service';
+import { LanguageToggleComponent } from '../shared/language-toggle.component';
 
 interface NavItem {
   link: string;
@@ -54,12 +53,12 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
     RouterLink,
     RouterLinkActive,
     MatButtonModule,
-    MatButtonToggleModule,
     MatIconModule,
     MatListModule,
     MatMenuModule,
     MatSidenavModule,
     MatToolbarModule,
+    LanguageToggleComponent,
     TranslocoPipe,
   ],
   styles: `
@@ -137,16 +136,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
         <span class="title">{{ 'app.title' | transloco }}</span>
         <span class="spacer"></span>
 
-        <mat-button-toggle-group
-          class="lang"
-          hideSingleSelectionIndicator
-          [value]="language.current()"
-          [attr.aria-label]="'shell.language' | transloco"
-          (change)="setLanguage($event.value)"
-        >
-          <mat-button-toggle value="it">IT</mat-button-toggle>
-          <mat-button-toggle value="en">EN</mat-button-toggle>
-        </mat-button-toggle-group>
+        <app-language-toggle class="lang" />
 
         <button
           mat-icon-button
@@ -194,7 +184,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
                     class="badge"
                     role="img"
                     data-testid="requests-badge"
-                    [attr.aria-label]="'nav.pendingBadge' | transloco: { count: pending.count() }"
+                    [attr.aria-label]="badgeLabel() | transloco: { count: pending.count() }"
                     >{{ pending.count() }}</span
                   >
                 }
@@ -211,7 +201,6 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
 })
 export class ShellComponent {
   protected readonly auth = inject(AuthService);
-  protected readonly language = inject(LanguageService);
   protected readonly pending = inject(PendingRequestsService);
 
   protected readonly handset = toSignal(
@@ -225,8 +214,15 @@ export class ShellComponent {
   protected readonly drawerOpen = linkedSignal(() => !this.handset());
 
   /** Etichetta del pulsante menu: segnala anche le richieste in attesa. */
-  protected readonly menuLabel = computed(() =>
-    this.pending.count() > 0 ? 'shell.menuPending' : 'shell.menu',
+  protected readonly menuLabel = computed(() => {
+    const count = this.pending.count();
+    if (count === 0) return 'shell.menu';
+    return count === 1 ? 'shell.menuPendingOne' : 'shell.menuPending';
+  });
+
+  /** Etichetta accessibile del badge: singolare con una sola richiesta. */
+  protected readonly badgeLabel = computed(() =>
+    this.pending.count() === 1 ? 'nav.pendingBadgeOne' : 'nav.pendingBadge',
   );
 
   protected readonly navItems = computed(() => {
@@ -240,10 +236,6 @@ export class ShellComponent {
       const role = this.auth.role();
       untracked(() => (role === 'coach' ? this.pending.refresh() : this.pending.clear()));
     });
-  }
-
-  protected setLanguage(lang: Lang): void {
-    this.language.set(lang);
   }
 
   /** Su mobile il cassetto copre la pagina: si chiude dopo la navigazione. */

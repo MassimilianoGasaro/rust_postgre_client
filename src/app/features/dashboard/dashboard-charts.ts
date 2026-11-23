@@ -1,5 +1,6 @@
 import type { EChartsCoreOption } from 'echarts/core';
 import { Granularity, StatsSummary } from '../../core/api/models';
+import { dateLocale } from '../../core/format/date-locale';
 import { DurationPipe } from '../../core/format/format.pipes';
 import { parseIsoDate } from '../../core/time/dates';
 
@@ -39,7 +40,7 @@ export function periodLabel(
     case 'week':
       return `${ctx.t('dashboard.chart.weekPrefix')} ${dayMonth}`;
     case 'month':
-      return new Intl.DateTimeFormat(ctx.lang, { month: 'short', year: 'numeric' }).format(date);
+      return new Intl.DateTimeFormat(dateLocale(ctx.lang), { month: 'short', year: 'numeric' }).format(date);
   }
 }
 
