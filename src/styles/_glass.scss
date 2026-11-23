@@ -1,0 +1,103 @@
+// Materiale "Liquid Glass" per il web: un'approssimazione CSS del materiale iOS 26.
+// Superficie traslucida che sfoca e satura ciò che sta dietro, con bordo luminoso
+// e riflesso speculare in alto. I colori derivano dalle variabili di sistema di
+// Angular Material, quindi seguono il tema (chiaro/scuro) senza ridefinizioni.
+//
+// Uso:
+//   @use '<percorso>/styles/glass' as glass;
+//   .barra { @include glass.surface($radius: 28px); }
+//   .pulsante { @include glass.interactive; }
+//
+// I token vanno emessi una volta sola, in styles.scss: `@include glass.tokens;`
+
+/// Variabili CSS del materiale. Da includere su `:root`/`html`.
+@mixin tokens {
+  // riempimento: superficie del tema resa traslucida
+  --glass-fill: color-mix(in srgb, var(--mat-sys-surface) 55%, transparent);
+  // con blur non supportato serve più opacità per mantenere il contrasto del testo
+  --glass-fill-fallback: color-mix(in srgb, var(--mat-sys-surface) 92%, transparent);
+  --glass-blur: 22px;
+  --glass-saturate: 180%;
+  // bordo e riflesso: luce bianca, più tenue con lo schema scuro
+  --glass-rim: light-dark(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.14));
+  --glass-specular: light-dark(rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.22));
+  --glass-sheen: light-dark(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.06));
+  --glass-shade: color-mix(in srgb, var(--mat-sys-shadow) 6%, transparent);
+  --glass-shadow:
+    0 1px 2px color-mix(in srgb, var(--mat-sys-shadow) 8%, transparent),
+    0 10px 30px color-mix(in srgb, var(--mat-sys-shadow) 12%, transparent);
+}
+
+/// Superficie di vetro: barre, pannelli, card flottanti.
+/// @param {Length} $radius - raggio degli angoli (999px per una capsula)
+@mixin surface($radius: 24px) {
+  border-radius: $radius;
+  border: 1px solid var(--glass-rim);
+  background-color: var(--glass-fill);
+  // riflesso morbido nella metà superiore, come la luce che colpisce il vetro
+  background-image: linear-gradient(to bottom, var(--glass-sheen), transparent 55%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow:
+    inset 0 1px 0 var(--glass-specular),
+    inset 0 -1px 0 var(--glass-shade),
+    var(--glass-shadow);
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background-color: var(--glass-fill-fallback);
+  }
+
+  // chi chiede meno trasparenza riceve una superficie piena
+  @media (prefers-reduced-transparency: reduce) {
+    background-color: var(--mat-sys-surface-container);
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  // contrasto elevato di sistema: niente effetti, bordo netto
+  @media (forced-colors: active) {
+    border-color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+  }
+}
+
+/// Risposta al tocco/puntatore per gli elementi interattivi sopra il vetro.
+@mixin interactive {
+  transition: transform 160ms cubic-bezier(0.2, 0, 0, 1);
+
+  &:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
+
+/// Sfondo ambientale: il vetro ha bisogno di colore dietro da sfocare.
+@mixin ambient-backdrop {
+  background-color: var(--mat-sys-surface);
+  background-image:
+    radial-gradient(
+      50rem 34rem at 0% 0%,
+      color-mix(in srgb, var(--mat-sys-primary) 28%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      44rem 32rem at 100% 10%,
+      color-mix(in srgb, var(--mat-sys-tertiary) 22%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      55rem 40rem at 45% 115%,
+      color-mix(in srgb, var(--mat-sys-primary-container) 90%, transparent),
+      transparent 70%
+    );
+  background-attachment: fixed;
+}
