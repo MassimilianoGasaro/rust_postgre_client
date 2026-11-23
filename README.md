@@ -1,6 +1,6 @@
 # Allenamento - client web
 
-Client Angular (Material, Transloco, ECharts) per la piattaforma di allenamento sportivo. Il backend Rust e' un repository separato.
+Client Angular (Material, Transloco, ECharts) per la piattaforma di allenamento sportivo. Il backend Rust e' un repository separato: https://github.com/MassimilianoGasaro/rust_postgre
 
 ## Prerequisiti
 
@@ -25,6 +25,10 @@ npm start
 
 L'app e' servita su http://localhost:4200; le chiamate a `/api/...` passano dal proxy.
 
+## Deploy
+
+L'app deve essere servita dalla **radice del sito** (`/`): le traduzioni sono caricate dal percorso assoluto `/i18n/<lingua>.json`, quindi un deploy in un sotto-percorso (es. `https://host/app/`) non le trova.
+
 ## Test e build
 
 ```bash
@@ -36,3 +40,7 @@ npx ng build
 ## Internazionalizzazione
 
 Le traduzioni sono in `public/i18n/it.json` (default) e `public/i18n/en.json`: le due lingue devono avere lo stesso insieme di chiavi (verificato da `src/app/i18n-keys.spec.ts`).
+
+## Licenza
+
+Una licenza non e' ancora stata scelta.
