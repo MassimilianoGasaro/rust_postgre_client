@@ -4,7 +4,7 @@
 
 **Goal:** Creare il client web responsive e bilingue (IT/EN) per atleti e allenatori: login/registrazione, import file, dashboard con intervallo di date, profilo, gestione della relazione allenatore-atleta.
 
-**Architecture:** App Angular standalone in un repo indipendente `<cartella repos>\rust_postgre_client`. Uno strato `core/` (modelli API, servizi HTTP, autenticazione, interceptor, guard) e una cartella per funzionalità in `features/`. Il componente dashboard è unico e riceve opzionalmente `athleteId`, così la vista dell'allenatore riusa quella dell'atleta.
+**Architecture:** App Angular standalone in un repo indipendente `rust_postgre_client`, cartella sorella di `rust_postgre`. Uno strato `core/` (modelli API, servizi HTTP, autenticazione, interceptor, guard) e una cartella per funzionalità in `features/`. Il componente dashboard è unico e riceve opzionalmente `athleteId`, così la vista dell'allenatore riusa quella dell'atleta.
 
 **Tech Stack:** Angular (ultima stabile, standalone, signals, TypeScript strict), Angular Material + CDK (layout/breakpoint), Transloco (i18n a runtime), ECharts via `ngx-echarts`, test runner di default del CLI Angular.
 
@@ -63,7 +63,7 @@ rust_postgre_client/
 
 **Files:** tutto il progetto generato; Create: `proxy.conf.json`, `public/i18n/it.json`, `public/i18n/en.json`, `src/app/core/i18n/transloco-loader.ts`, `src/app/i18n-keys.spec.ts`, `README.md`
 
-- [ ] **Step 1:** In `<cartella repos>\`: `npx @angular/cli@latest new rust_postgre_client --style=scss --routing --ssr=false --skip-git=false` (standalone e strict sono default). `cd rust_postgre_client; npx ng add @angular/material` (tema a scelta, tipografia sì); `npm i @jsverse/transloco echarts ngx-echarts`.
+- [ ] **Step 1:** Nella cartella che contiene `rust_postgre` (cartella madre comune): `npx @angular/cli@latest new rust_postgre_client --style=scss --routing --ssr=false --skip-git=false` (standalone e strict sono default). `cd rust_postgre_client; npx ng add @angular/material` (tema a scelta, tipografia sì); `npm i @jsverse/transloco echarts ngx-echarts`.
 - [ ] **Step 2:** `proxy.conf.json`: `{"/api": {"target": "https://localhost:3000", "secure": false, "changeOrigin": true}}`; in `angular.json` → `serve.options.proxyConfig`. Configurare Transloco in `app.config.ts` (`availableLangs: ['it','en']`, `defaultLang: 'it'`, `reRenderOnLangChange: true`, loader HTTP da `/i18n/<lang>.json`) e `provideEchartsCore({ echarts: () => import('echarts') })`. Chiavi iniziali: `app.title` (`"Allenamento"` / `"Training"`), `errors.GENERIC`.
 - [ ] **Step 3: Test che falliscono.** `src/app/i18n-keys.spec.ts`: importa i due JSON, li appiattisce in chiavi puntate e verifica `expect(keysIt).toEqual(keysEn)` (Review Focus 1). `app.spec.ts`: il componente root mostra `app.title` tradotto in italiano; dopo `setActiveLang('en')` mostra `"Training"`.
 - [ ] **Step 4:** `npx ng test --watch=false` → Expected: FAIL; implementare; → Expected: PASS. `npx ng build` → Expected: build ok.
