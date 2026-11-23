@@ -15,7 +15,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Subscription, exhaustMap, map, takeWhile, tap, timer } from 'rxjs';
 import { ImportApi } from '../../core/api/import-api';
-import { errorKey } from '../../core/api/errors';
+import { errorCodeKey, errorKey } from '../../core/api/errors';
 import { ImportDto, ImportItem } from '../../core/api/models';
 import { dateLocale } from '../../core/format/date-locale';
 
@@ -447,11 +447,7 @@ export class ImportPage {
   }
 
   protected noteKey(item: ImportItem): string | null {
-    if (item.status === 'failed') {
-      const key = `errors.${item.error_code ?? 'GENERIC'}`;
-      // codice senza traduzione: messaggio generico (translate restituisce la chiave stessa)
-      return this.transloco.translate(key) === key ? 'errors.GENERIC' : key;
-    }
+    if (item.status === 'failed') return errorCodeKey(item.error_code);
     if (item.status === 'duplicate') return 'import.duplicateNote';
     return null;
   }
