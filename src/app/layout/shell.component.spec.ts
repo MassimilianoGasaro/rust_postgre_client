@@ -107,6 +107,13 @@ describe('ShellComponent', () => {
     expect(el.querySelector('mat-sidenav')!.classList.contains('mat-drawer-opened')).toBe(true);
   });
 
+  it('renders the routed content inside a single <main> landmark', () => {
+    const { el } = setup('athlete', false);
+    const mains = el.querySelectorAll('main');
+    expect(mains.length).toBe(1);
+    expect(mains[0].classList.contains('content')).toBe(true);
+  });
+
   it('athlete menu contains Import and not Richieste', () => {
     const { el } = setup('athlete', false);
     const texts = navTexts(el);

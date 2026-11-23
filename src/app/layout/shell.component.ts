@@ -193,7 +193,7 @@ const NAV_ITEMS: Record<Role, NavItem[]> = {
           </mat-nav-list>
         </mat-sidenav>
         <mat-sidenav-content>
-          <div class="content"><router-outlet /></div>
+          <main class="content"><router-outlet /></main>
         </mat-sidenav-content>
       </mat-sidenav-container>
     </div>
