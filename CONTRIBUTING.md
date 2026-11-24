@@ -23,6 +23,9 @@ https://github.com/MassimilianoGasaro/rust_postgre
 
 `main` e `develop` sono protetti: si passa sempre da una Pull Request con la CI verde.
 
+I rilasci (cambio di versione, tag, Release) seguono la procedura in
+[RELEASING.md](RELEASING.md).
+
 ## Flusso di lavoro
 
 1. Fai il **fork** del repository (pulsante *Fork* su GitHub) e clonalo.
