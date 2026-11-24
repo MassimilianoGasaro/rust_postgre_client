@@ -58,3 +58,5 @@ Le traduzioni sono in `public/i18n/it.json` (default) e `public/i18n/en.json`: l
 ## Contribuire e licenza
 
 Come contribuire (fork, branch, commit, controlli prima della PR) e' descritto in [CONTRIBUTING.md](CONTRIBUTING.md). Il progetto e' distribuito con licenza [MIT](LICENSE).
+
+La procedura di rilascio (versione, tag, Release) e' in [RELEASING.md](RELEASING.md).
