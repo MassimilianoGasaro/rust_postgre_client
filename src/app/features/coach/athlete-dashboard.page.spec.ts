@@ -12,6 +12,7 @@ import { AthleteDashboardPage } from './athlete-dashboard.page';
 import { Activity, LinkedAthlete, Page, StatsSummary } from '../../core/api/models';
 import { TODAY } from '../../core/time/today';
 import { translocoTesting } from '../../testing';
+import { stubFitnessSection } from '../dashboard/fitness/fitness-section.testing';
 import itJson from '../../../../public/i18n/it.json';
 
 const athlete = (id: number, username: string): LinkedAthlete => ({
@@ -92,6 +93,7 @@ async function setup(url: string) {
       },
     ],
   });
+  stubFitnessSection();
   const ctrl = TestBed.inject(HttpTestingController);
   const harness = await RouterTestingHarness.create();
   const settle = async () => {

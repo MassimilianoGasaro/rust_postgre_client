@@ -148,6 +148,73 @@
     "delete": {
       "title": "Delete activity",
       "message": "Do you want to delete this activity? This cannot be undone."
+    },
+    "fitness": {
+      "title": "Fitness",
+      "scope": "Analysing: {{sport}} (activities of at least 15 minutes with HR)",
+      "unsupported": "Fitness charts are available for running, walking, hiking and cycling.",
+      "empty": "At least 2 activities with heart rate and speed are needed in the selected period.",
+      "band": {
+        "label": "HR band",
+        "min": "Min bpm",
+        "max": "Max bpm",
+        "fromProfile": "default band: zone 2 computed from your profile",
+        "manual": "default band: set max and resting HR in the profile to compute it",
+        "title": {
+          "pace": "Pace at {{min}}–{{max}} bpm",
+          "speed": "Speed at {{min}}–{{max}} bpm"
+        },
+        "hint": {
+          "pace": "Average pace per period of activities whose average HR is in the band: lower = faster.",
+          "speed": "Average speed per period of activities whose average HR is in the band: higher = faster."
+        }
+      },
+      "efficiency": {
+        "title": "Efficiency over time",
+        "hint": "Metres per minute per heartbeat: if the line rises, you are faster at the same heart rate.",
+        "points": "Activities",
+        "rolling": "4-week rolling average"
+      },
+      "paceHr": {
+        "title": {
+          "pace": "Pace vs heart rate",
+          "speed": "Speed vs heart rate"
+        },
+        "hint": {
+          "pace": "Each dot is an activity. If the recent line sits lower, you are faster at the same heart rate.",
+          "speed": "Each dot is an activity. If the recent line sits higher, you are faster at the same heart rate."
+        },
+        "early": "Start of period",
+        "middle": "Middle of period",
+        "recent": "End of period"
+      },
+      "endurance": {
+        "title": "Endurance at {{min}}–{{max}} bpm",
+        "hint": "Duration of the longest activity per period with average HR in the band. Approximate indicator."
+      },
+      "kpi": {
+        "band": {
+          "pace": "Pace at {{min}}–{{max}} bpm",
+          "speed": "Speed at {{min}}–{{max}} bpm"
+        },
+        "efficiency": "Efficiency index",
+        "longest": "Longest activity at {{min}}–{{max}} bpm",
+        "vsFirstHalf": "vs first half of the period"
+      },
+      "axis": {
+        "pace": "min/km",
+        "speed": "km/h",
+        "efficiency": "m/min per bpm",
+        "hr": "Average HR (bpm)",
+        "minutes": "duration"
+      },
+      "tooltip": {
+        "hr": "Average HR",
+        "pace": "Pace",
+        "speed": "Speed",
+        "duration": "Duration",
+        "none": "No activities in the band"
+      }
     }
   },
   "profile": {

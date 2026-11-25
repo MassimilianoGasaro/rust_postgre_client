@@ -10,6 +10,8 @@ import { Activity, Page, StatsSummary } from '../../core/api/models';
 import { TODAY } from '../../core/time/today';
 import { translocoTesting } from '../../testing';
 import { DashboardComponent } from './dashboard.component';
+import { stubFitnessSection } from './fitness/fitness-section.testing';
+
 import itJson from '../../../../public/i18n/it.json';
 
 const activity = (id: number, over: Partial<Activity> = {}): Activity => ({
@@ -126,6 +128,7 @@ async function setup(options: SetupOptions = {}) {
       },
     ],
   });
+  stubFitnessSection();
   const router = TestBed.inject(Router);
   if (options.query) await router.navigateByUrl(`/?${options.query}`);
   const ctrl = TestBed.inject(HttpTestingController);
