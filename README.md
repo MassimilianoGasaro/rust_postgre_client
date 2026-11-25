@@ -43,6 +43,16 @@ Configurazione una tantum:
 2. Crea un API token (My Profile → API Tokens) con il permesso **Account → Cloudflare Pages → Edit**.
 3. Nel repo GitHub (Settings → Secrets and variables → Actions) aggiungi `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` (l'ID e' nella dashboard Cloudflare, colonna di destra della pagina Workers & Pages).
 
+## Compatibilità con l'API
+
+Versione minima del backend ([rust_postgre](https://github.com/MassimilianoGasaro/rust_postgre)) richiesta da ogni versione del client. Si aggiunge una riga solo quando la versione minima cambia; in quel caso l'API va rilasciata prima del client (vedi [RELEASING.md](RELEASING.md)).
+
+| Client | API minima |
+|---|---|
+| 0.1.x | 0.1.0 |
+
+La versione dell'API pubblicata si legge da `GET /api/health` (campo `version`).
+
 ## Test e build
 
 ```bash

@@ -43,6 +43,24 @@ git log --oneline v0.1.0..develop
 `git describe` restituisce l'ultima versione rilasciata: usala al posto di `v0.1.0` nel comando
 successivo, che elenca i commit non ancora rilasciati.
 
+### Compatibilità con l'API
+
+Se il rilascio usa qualcosa che l'API pubblicata non ha ancora (nuovo endpoint, nuovo campo,
+nuovo parametro):
+
+1. **rilascia prima l'API** (procedura in `RELEASING.md` di `rust_postgre`) e verifica la
+   versione online, nel campo `version` della risposta:
+
+   ```
+   curl https://rust-postgre-api.onrender.com/api/health
+   ```
+
+2. aggiorna la tabella **Compatibilità con l'API** del `README.md` con la nuova versione minima,
+   nello stesso branch `release/vX.Y.Z` (punto 2);
+3. scrivi il requisito nella Release (punto 5).
+
+Se il client usa solo ciò che l'API già offre, la tabella non cambia.
+
 ## 2. Aggiorna la versione nel progetto
 
 La versione in `package.json` deve coincidere con il tag.
@@ -111,7 +129,13 @@ Nel repository: **Releases → Draft a new release**.
 
 1. **Choose a tag**: `vX.Y.Z`.
 2. **Generate release notes**: GitHub elenca le Pull Request incluse.
-3. Rileggi le note, aggiungi in cima un riassunto se serve, poi **Publish release**.
+3. Rileggi le note, aggiungi in cima un riassunto se serve, poi **Publish release**. Se la
+   versione minima dell'API è cambiata, aggiungi una sezione:
+
+   ```markdown
+   ## Requisiti
+   - Richiede API (rust_postgre) **≥ vA.B.C**: <cosa usa di nuovo>.
+   ```
 
 ## 6. Riallinea `develop`
 
@@ -174,6 +198,7 @@ git switch -c hotfix/descrizione-breve
 ## Checklist
 
 - [ ] Numero di versione scelto (punto 1)
+- [ ] Se serve una nuova API: API già rilasciata, tabella di compatibilità nel README aggiornata
 - [ ] `package.json` e `package-lock.json` aggiornati con `npm version`, PR `release/vX.Y.Z → develop` unita
 - [ ] PR `develop → main` unita, job `deploy` verde, sito aggiornato
 - [ ] Tag `vX.Y.Z` creato su `main` e pushato
