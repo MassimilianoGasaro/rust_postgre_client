@@ -148,6 +148,73 @@
     "delete": {
       "title": "Elimina attività",
       "message": "Vuoi eliminare questa attività? L'operazione non può essere annullata."
+    },
+    "fitness": {
+      "title": "Forma fisica",
+      "scope": "Analisi su: {{sport}} (attività di almeno 15 minuti con FC)",
+      "unsupported": "I grafici di forma sono disponibili per corsa, camminata, escursionismo e ciclismo.",
+      "empty": "Servono almeno 2 attività con frequenza cardiaca e velocità nel periodo selezionato.",
+      "band": {
+        "label": "Fascia FC",
+        "min": "Min bpm",
+        "max": "Max bpm",
+        "fromProfile": "fascia di default: zona 2 calcolata dal profilo",
+        "manual": "fascia di default: imposta FC massima e a riposo nel profilo per calcolarla",
+        "title": {
+          "pace": "Passo a {{min}}–{{max}} bpm",
+          "speed": "Velocità a {{min}}–{{max}} bpm"
+        },
+        "hint": {
+          "pace": "Passo medio per periodo delle sole attività con FC media nella fascia: più in basso = più veloce.",
+          "speed": "Velocità media per periodo delle sole attività con FC media nella fascia: più in alto = più veloce."
+        }
+      },
+      "efficiency": {
+        "title": "Efficienza nel tempo",
+        "hint": "Metri al minuto per battito: se la linea sale, vai più veloce a parità di battito.",
+        "points": "Attività",
+        "rolling": "Media mobile 4 settimane"
+      },
+      "paceHr": {
+        "title": {
+          "pace": "Passo rispetto al battito",
+          "speed": "Velocità rispetto al battito"
+        },
+        "hint": {
+          "pace": "Ogni punto è un'attività. Se la retta recente è più in basso, a parità di battito vai più forte.",
+          "speed": "Ogni punto è un'attività. Se la retta recente è più in alto, a parità di battito vai più forte."
+        },
+        "early": "Inizio periodo",
+        "middle": "Metà periodo",
+        "recent": "Fine periodo"
+      },
+      "endurance": {
+        "title": "Resistenza a {{min}}–{{max}} bpm",
+        "hint": "Durata dell'attività più lunga per periodo con FC media nella fascia. Indicatore approssimato."
+      },
+      "kpi": {
+        "band": {
+          "pace": "Passo a {{min}}–{{max}} bpm",
+          "speed": "Velocità a {{min}}–{{max}} bpm"
+        },
+        "efficiency": "Indice di efficienza",
+        "longest": "Attività più lunga a {{min}}–{{max}} bpm",
+        "vsFirstHalf": "vs prima metà del periodo"
+      },
+      "axis": {
+        "pace": "min/km",
+        "speed": "km/h",
+        "efficiency": "m/min per bpm",
+        "hr": "FC media (bpm)",
+        "minutes": "durata"
+      },
+      "tooltip": {
+        "hr": "FC media",
+        "pace": "Passo",
+        "speed": "Velocità",
+        "duration": "Durata",
+        "none": "Nessuna attività nella fascia"
+      }
     }
   },
   "profile": {

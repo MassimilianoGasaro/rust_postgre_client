@@ -51,6 +51,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/confirm-
 import { formatActivityStart, formatElevation, formatHeartRate } from './activity-format';
 import { barOption, donutOption } from './dashboard-charts';
 import { DateRangeComponent } from './date-range.component';
+import { FitnessSectionComponent } from './fitness/fitness-section.component';
 
 /** Sport normalizzati dal backend (più "all" = nessun filtro). */
 const SPORTS = ['running', 'cycling', 'swimming', 'walking', 'hiking', 'strength', 'other'];
@@ -90,6 +91,7 @@ const settled = <T>(source: Observable<T>) =>
     DistanceKmPipe,
     DurationPipe,
     DateRangeComponent,
+    FitnessSectionComponent,
   ],
   styles: `
     :host {
@@ -263,6 +265,13 @@ const settled = <T>(source: Observable<T>) =>
             <div echarts class="chart" data-testid="chart-donut" [options]="donutOptions()"></div>
           </div>
         </section>
+
+        <app-fitness-section
+          [range]="range()"
+          [sportFilter]="sport()"
+          [athleteId]="athleteId()"
+          [ctx]="chartContext()"
+        />
       }
     }
 
@@ -446,7 +455,7 @@ export class DashboardComponent {
     { initialValue: 0 },
   );
 
-  private readonly chartContext = computed(() => {
+  protected readonly chartContext = computed(() => {
     this.i18nTick();
     return {
       lang: this.transloco.getActiveLang(),

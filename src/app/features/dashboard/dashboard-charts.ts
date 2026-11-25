@@ -16,7 +16,7 @@ const SPORT_COLORS = ['#1f6feb', '#e8710a', '#12a594', '#d6409f', '#7c5cd6', '#c
 const duration = new DurationPipe();
 const pad = (n: number) => String(n).padStart(2, '0');
 
-const escapeHtml = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+export const escapeHtml = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /** Nome tradotto dello sport; se manca la traduzione resta il codice grezzo. */
 export function sportLabel(sport: string, ctx: ChartContext): string {
@@ -40,7 +40,10 @@ export function periodLabel(
     case 'week':
       return `${ctx.t('dashboard.chart.weekPrefix')} ${dayMonth}`;
     case 'month':
-      return new Intl.DateTimeFormat(dateLocale(ctx.lang), { month: 'short', year: 'numeric' }).format(date);
+      return new Intl.DateTimeFormat(dateLocale(ctx.lang), {
+        month: 'short',
+        year: 'numeric',
+      }).format(date);
   }
 }
 
